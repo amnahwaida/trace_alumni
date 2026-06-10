@@ -1,0 +1,130 @@
+{{define "settings.html"}}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.PageTitle}} - Alumni Tracker</title>
+    <link rel="icon" type="image/x-icon" href="{{if .Settings.favicon_path}}{{.Settings.favicon_path}}{{else}}/static/favicon.ico{{end}}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-950 text-white min-h-screen">
+    {{template "sidebar" .}}
+    {{template "mobile_header" .}}
+
+    <main class="lg:ml-64 p-4 md:p-8">
+        <div class="mb-6">
+            <h1 class="text-xl md:text-2xl font-bold">Pengaturan Sistem</h1>
+            <p class="text-slate-400 text-xs md:text-sm mt-0.5 font-medium">Kustomisasi identitas aplikasi rekam jejak alumni</p>
+        </div>
+
+        {{if .Success}}
+        <div class="bg-green-500/10 border border-green-500/30 rounded-lg p-3 mb-4 text-green-300 text-sm">✅ {{.Success}}</div>
+        {{end}}
+        {{if .Error}}
+        <div class="bg-red-500/10 border border-red-500/30 rounded-lg p-3 mb-4 text-red-300 text-sm">❌ {{.Error}}</div>
+        {{end}}
+
+        <div class="max-w-2xl bg-slate-900 border border-slate-800 rounded-xl p-6 md:p-8">
+            <form method="POST" action="/dashboard/settings/save" enctype="multipart/form-data" class="space-y-6">
+                <!-- School Name -->
+                <div class="space-y-2">
+                    <label for="school_name" class="block text-sm font-semibold text-slate-300">Nama Sekolah / Instansi</label>
+                    <input type="text" id="school_name" name="school_name" value="{{.Settings.school_name}}" required
+                        class="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-lg text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm transition-all duration-200">
+                    <p class="text-xs text-slate-500">Akan digunakan pada landing page, sidebar, dan judul halaman.</p>
+                </div>
+
+                <!-- Project Credit -->
+                <div class="space-y-2">
+                    <label for="project_credit" class="block text-sm font-semibold text-slate-300">Credit Project (Footer)</label>
+                    <input type="text" id="project_credit" name="project_credit" value="{{.Settings.project_credit}}" required
+                        class="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-lg text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm transition-all duration-200">
+                    <p class="text-xs text-slate-500">Pemberitahuan hak cipta di bagian bawah halaman.</p>
+                </div>
+
+                <!-- Logo Section -->
+                <div class="space-y-3 pt-2 border-t border-slate-800">
+                    <label class="block text-sm font-semibold text-slate-300">Logo Aplikasi</label>
+                    <div class="flex items-center gap-6">
+                        <div class="w-16 h-16 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center overflow-hidden p-2 flex-shrink-0">
+                            {{if .Settings.logo_path}}
+                            <img src="{{.Settings.logo_path}}" id="logo-preview" class="max-w-full max-h-full object-contain">
+                            {{else}}
+                            <div class="w-10 h-10 rounded-lg bg-blue-600/30 flex items-center justify-center text-blue-400" id="logo-placeholder">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            </div>
+                            <img id="logo-preview" class="max-w-full max-h-full object-contain hidden">
+                            {{end}}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <input type="file" id="logo" name="logo" accept="image/*" onchange="previewImage(this, 'logo-preview', 'logo-placeholder')"
+                                class="hidden">
+                            <label for="logo" class="inline-flex items-center justify-center px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg text-xs font-semibold border border-slate-700/50 cursor-pointer transition-all">
+                                Pilih File Logo
+                            </label>
+                            <p class="text-[10px] text-slate-500 mt-2">Format: PNG, JPG, GIF. Maks. 2MB. Di-fit ke maks. 400x120px.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Favicon Section -->
+                <div class="space-y-3 pt-2 border-t border-slate-800">
+                    <label class="block text-sm font-semibold text-slate-300">Favicon Aplikasi</label>
+                    <div class="flex items-center gap-6">
+                        <div class="w-16 h-16 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center overflow-hidden p-2 flex-shrink-0">
+                            {{if .Settings.favicon_path}}
+                            <img src="{{.Settings.favicon_path}}" id="favicon-preview" class="w-8 h-8 object-contain">
+                            {{else}}
+                            <div class="w-8 h-8 rounded-lg bg-blue-600/30 flex items-center justify-center text-blue-400" id="favicon-placeholder">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                            </div>
+                            <img id="favicon-preview" class="w-8 h-8 object-contain hidden">
+                            {{end}}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <input type="file" id="favicon" name="favicon" accept="image/*" onchange="previewImage(this, 'favicon-preview', 'favicon-placeholder')"
+                                class="hidden">
+                            <label for="favicon" class="inline-flex items-center justify-center px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg text-xs font-semibold border border-slate-700/50 cursor-pointer transition-all">
+                                Pilih File Favicon
+                            </label>
+                            <p class="text-[10px] text-slate-500 mt-2">Format: PNG, JPG, ICO, GIF. Maks. 1MB. Di-fit ke 48x48px.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="pt-4 border-t border-slate-800 flex items-center justify-end gap-3">
+                    <button type="submit" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-sm font-semibold transition-colors shadow-lg shadow-blue-600/15">
+                        Simpan Perubahan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        function previewImage(input, previewId, placeholderId) {
+            const preview = document.getElementById(previewId);
+            const placeholder = document.getElementById(placeholderId);
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                    if (placeholder) {
+                        placeholder.classList.add('hidden');
+                    }
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+</body>
+</html>
+{{end}}

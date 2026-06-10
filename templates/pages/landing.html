@@ -4,8 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{.PageTitle}}</title>
-    <meta name="description" content="Sistem pencarian dan rekam jejak alumni SMAS Muhammadiyah 1 Ngawi. Temukan teman alumni Anda.">
+    <title>{{if .Settings.school_name}}{{.Settings.school_name}}{{else}}SMAS Muhammadiyah 1 Ngawi{{end}} - Alumni Tracker</title>
+    <meta name="description" content="Sistem pencarian dan rekam jejak alumni {{if .Settings.school_name}}{{.Settings.school_name}}{{else}}SMAS Muhammadiyah 1 Ngawi{{end}}. Temukan teman alumni Anda.">
+    <link rel="icon" type="image/x-icon" href="{{if .Settings.favicon_path}}{{.Settings.favicon_path}}{{else}}/static/favicon.ico{{end}}">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/htmx.org@1.9.12"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -26,12 +27,16 @@
     <nav class="fixed top-0 w-full z-50 glass">
         <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center gap-2">
             <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-                <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-blue-600/30 border border-blue-500/40 flex items-center justify-center">
+                <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-blue-600/30 border border-blue-500/40 flex items-center justify-center overflow-hidden p-1.5 flex-shrink-0">
+                    {{if .Settings.logo_path}}
+                    <img src="{{.Settings.logo_path}}" class="max-w-full max-h-full object-contain">
+                    {{else}}
                     <svg class="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                     </svg>
+                    {{end}}
                 </div>
-                <span class="font-bold text-sm sm:text-lg tracking-tight">Alumni Tracker</span>
+                <span class="font-bold text-sm sm:text-lg tracking-tight">{{if .Settings.school_name}}{{.Settings.school_name}}{{else}}Alumni Tracker{{end}}</span>
             </div>
             <div class="flex items-center gap-1.5 sm:gap-4">
                 <a href="/info" class="text-xs sm:text-sm text-slate-300 hover:text-white transition-colors px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg hover:bg-white/5 font-medium">Papan Info</a>
@@ -46,13 +51,13 @@
             <div class="max-w-4xl mx-auto text-center">
                 <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs sm:text-sm mb-4 sm:mb-6">
                     <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                    SMAS Muhammadiyah 1 Ngawi
+                    {{if .Settings.school_name}}{{.Settings.school_name}}{{else}}SMAS Muhammadiyah 1 Ngawi{{end}}
                 </div>
                 <h1 class="text-3xl sm:text-4xl md:text-6xl font-extrabold mb-4 sm:mb-6 bg-gradient-to-r from-white via-blue-100 to-blue-300 bg-clip-text text-transparent leading-tight">
                     Rekam Jejak Alumni
                 </h1>
                 <p class="text-sm sm:text-lg text-slate-400 mb-8 sm:mb-10 max-w-2xl mx-auto">
-                    Temukan dan hubungi alumni SMAS Muhammadiyah 1 Ngawi. Cari berdasarkan nama atau tahun lulus.
+                    Temukan dan hubungi alumni {{if .Settings.school_name}}{{.Settings.school_name}}{{else}}SMAS Muhammadiyah 1 Ngawi{{end}}. Cari berdasarkan nama atau tahun lulus.
                 </p>
 
                 <!-- Search Bar -->
@@ -93,7 +98,7 @@
     <!-- Footer -->
     <footer class="border-t border-slate-800 py-8 px-4">
         <div class="max-w-6xl mx-auto text-center text-slate-500 text-xs sm:text-sm">
-            <p>&copy; 2026 SMAS Muhammadiyah 1 Ngawi. Sistem Rekam Jejak Alumni.</p>
+            <p>{{if .Settings.project_credit}}{{.Settings.project_credit}}{{else}}&copy; 2026 SMAS Muhammadiyah 1 Ngawi. Sistem Rekam Jejak Alumni.{{end}}</p>
         </div>
     </footer>
 </body>

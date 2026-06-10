@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Rekam Jejak Alumni</title>
+    <title>Login - {{if .Settings.school_name}}{{.Settings.school_name}}{{else}}Rekam Jejak Alumni{{end}}</title>
+    <link rel="icon" type="image/x-icon" href="{{if .Settings.favicon_path}}{{.Settings.favicon_path}}{{else}}/static/favicon.ico{{end}}">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -18,13 +19,17 @@
 <body class="gradient-bg min-h-screen flex items-center justify-center p-4">
     <div class="w-full max-w-md">
         <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-600/20 border border-blue-500/30 mb-4">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-600/20 border border-blue-500/30 mb-4 overflow-hidden p-2">
+                {{if .Settings.logo_path}}
+                <img src="{{.Settings.logo_path}}" class="max-w-full max-h-full object-contain">
+                {{else}}
                 <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                 </svg>
+                {{end}}
             </div>
             <h1 class="text-2xl font-bold text-white">Rekam Jejak Alumni</h1>
-            <p class="text-slate-400 mt-1">SMAS Muhammadiyah 1 Ngawi</p>
+            <p class="text-slate-400 mt-1">{{if .Settings.school_name}}{{.Settings.school_name}}{{else}}SMAS Muhammadiyah 1 Ngawi{{end}}</p>
         </div>
 
         <div class="glass rounded-2xl p-8 glow">

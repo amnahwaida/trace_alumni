@@ -141,7 +141,33 @@ func InitTemplates(templateDir string) error {
 	return nil
 }
 
+func getGlobalSettings() map[string]string {
+	settings := map[string]string{
+		"school_name":    "SMAS Muhammadiyah 1 Ngawi",
+		"project_credit": "© 2026 SMAS Muhammadiyah 1 Ngawi. Sistem Rekam Jejak Alumni.",
+		"favicon_path":   "",
+		"logo_path":      "",
+	}
+
+	rows, err := database.DB.Query("SELECT key, value FROM settings")
+	if err != nil {
+		return settings
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var key, value string
+		if err := rows.Scan(&key, &value); err == nil {
+			settings[key] = value
+		}
+	}
+	return settings
+}
+
 func renderTemplate(w http.ResponseWriter, name string, data interface{}) {
+	if m, ok := data.(map[string]interface{}); ok {
+		m["Settings"] = getGlobalSettings()
+	}
 	err := templates.ExecuteTemplate(w, name, data)
 	if err != nil {
 		log.Printf("Template error (%s): %v", name, err)

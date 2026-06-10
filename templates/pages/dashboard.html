@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{.PageTitle}} - Alumni Tracker</title>
+    <link rel="icon" type="image/x-icon" href="{{if .Settings.favicon_path}}{{.Settings.favicon_path}}{{else}}/static/favicon.ico{{end}}">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/htmx.org@1.9.12"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -17,7 +18,7 @@
     <main class="lg:ml-64 p-4 md:p-8">
         <div class="mb-6 md:mb-8">
             <h1 class="text-2xl font-bold">Selamat Datang, {{.User.Username}} 👋</h1>
-            <p class="text-slate-400 mt-1">Overview data alumni SMAS Muhammadiyah 1 Ngawi</p>
+            <p class="text-slate-400 mt-1">Overview data alumni {{if .Settings.school_name}}{{.Settings.school_name}}{{else}}SMAS Muhammadiyah 1 Ngawi{{end}}</p>
         </div>
 
         <!-- Stats Cards -->

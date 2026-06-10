@@ -101,6 +101,10 @@ func RunMigrations() error {
 		value TEXT NOT NULL
 	)`)
 	_, _ = DB.Exec(`INSERT OR IGNORE INTO settings (key, value) VALUES ('papan_enabled', '1')`)
+	_, _ = DB.Exec(`INSERT OR IGNORE INTO settings (key, value) VALUES ('school_name', 'SMAS Muhammadiyah 1 Ngawi')`)
+	_, _ = DB.Exec(`INSERT OR IGNORE INTO settings (key, value) VALUES ('project_credit', '© 2026 SMAS Muhammadiyah 1 Ngawi. Sistem Rekam Jejak Alumni.')`)
+	_, _ = DB.Exec(`INSERT OR IGNORE INTO settings (key, value) VALUES ('favicon_path', '')`)
+	_, _ = DB.Exec(`INSERT OR IGNORE INTO settings (key, value) VALUES ('logo_path', '')`)
 
 	var hasIsActive bool
 	rows, err := DB.Query("PRAGMA table_info(info_papan)")
