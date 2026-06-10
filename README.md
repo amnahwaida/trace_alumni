@@ -9,12 +9,33 @@ Sistem digitalisasi data alumni SMAS Muhammadiyah 1 Ngawi yang dirancang khusus 
 - **Landing Page & Pencarian Publik (Real-Time)**: Pencarian alumni interaktif menggunakan HTMX (tanpa reload halaman) berdasarkan nama, tahun kelulusan (angkatan), domisili, pekerjaan, dan nomor HP.
 - **Papan Pengumuman**: Board informasi loker, beasiswa, reuni, dan umum untuk publik. Dapat dikelola oleh Admin/Super Admin (dengan validasi tautan eksternal HTTPS yang aman untuk mencegah XSS).
 - **Manajemen Data Alumni**: Fitur CRUD data lengkap alumni beserta upload foto profil dengan **Auto-Resize & Kompresi** otomatis (foto di-resize ke maksimal 200x200 px & kompresi JPEG Quality 65%) untuk menghemat ruang disk.
-- **Manajemen User (Multi-Role)**:
-  - **Super Admin**: Akses penuh ke semua fitur dan manajemen pengguna sistem.
-  - **Admin**: CRUD data alumni, Import/Export Excel, kelola papan pengumuman.
-  - **Staff**: Memiliki hak akses read-only dan ekspor data rekap (tidak dapat menulis/menghapus data).
+- **Manajemen User (Multi-Role)**: Pengaturan hak akses berjenjang untuk Super Admin, Admin, dan Staff guna menjaga keamanan data.
 - **Import & Export Excel (In-Memory)**: Pengunggahan dan pengunduhan data alumni secara massal menggunakan file Excel (.xlsx) yang diproses langsung pada memori (RAM) tanpa meninggalkan file sampah sementara di disk.
 - **Premium Glassmorphism & UI Responsive (Mobile First)**: Antarmuka modern yang cepat dengan Tailwind CSS, dilengkapi dengan modal konfirmasi penghapusan data kustom (glassmorphism overlay).
+
+---
+
+## 👥 Hak Akses Pengguna (User Roles)
+
+Sistem ini menerapkan pembatasan hak akses yang ketat berdasarkan peran masing-masing pengguna:
+
+| Fitur / Kemampuan | Super Admin | Admin | Staff | Publik (Alumni) |
+| :--- | :---: | :---: | :---: | :---: |
+| **Pencarian Alumni** | ✅ Full | ✅ Full | ✅ Full | ⚠️ Masked (Sensitif disamarkan) |
+| **Tambah/Edit/Hapus Alumni** | ✅ Ya | ✅ Ya | ❌ Tidak | ❌ Tidak |
+| **Upload Foto Profil Alumni** | ✅ Ya | ✅ Ya | ❌ Tidak | ❌ Tidak |
+| **Import Excel Data Alumni** | ✅ Ya | ✅ Ya | ❌ Tidak | ❌ Tidak |
+| **Export Excel Data Alumni** | ✅ Ya | ✅ Ya | ✅ Ya | ❌ Tidak |
+| **Tambah/Edit/Hapus Pengumuman**| ✅ Ya | ✅ Ya | ❌ Tidak | ❌ Tidak |
+| **Toggle Global Board Pengumuman**| ✅ Ya | ✅ Ya | ❌ Tidak | ❌ Tidak |
+| **Manajemen User (Tambah/Hapus)** | ✅ Ya | ❌ Tidak | ❌ Tidak | ❌ Tidak |
+| **Akses Dashboard** | ✅ Ya | ✅ Ya | ✅ Ya | ❌ Tidak |
+
+### Deskripsi Peran:
+- **Super Admin**: Memiliki kontrol penuh atas sistem termasuk membuat dan menghapus akun pengguna (Admin/Staff) lainnya.
+- **Admin**: Bertanggung jawab atas pengelolaan data alumni (CRUD, Import/Export) serta pemeliharaan Papan Pengumuman publik.
+- **Staff**: Hanya memiliki hak akses baca (Read-only) data alumni untuk pencarian internal dan ekspor data rekapitulasi (tidak dapat menambah, mengubah, atau menghapus data).
+- **Publik (Alumni)**: Hanya dapat melihat landing page, mencari data alumni secara terbatas (alamat email dan nomor telepon disamarkan demi privasi), serta membaca Papan Pengumuman.
 
 ---
 
