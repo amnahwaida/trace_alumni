@@ -1,0 +1,194 @@
+{{define "sidebar"}}
+<!-- Backdrop for mobile -->
+<div id="sidebar-backdrop" class="fixed inset-0 bg-black/60 z-30 hidden lg:hidden transition-opacity duration-300 opacity-0" onclick="toggleSidebar()"></div>
+
+<aside class="fixed left-0 top-0 h-full w-64 bg-slate-900 border-r border-slate-800 z-40 flex flex-col transition-transform duration-300 -translate-x-full lg:translate-x-0" id="sidebar">
+    <div class="p-5 border-b border-slate-800 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-blue-600/30 border border-blue-500/40 flex items-center justify-center">
+                <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                </svg>
+            </div>
+            <div>
+                <p class="font-bold text-white text-sm">Alumni Tracker</p>
+                <p class="text-xs text-slate-500">Dashboard</p>
+            </div>
+        </div>
+        <!-- Close button for mobile -->
+        <button onclick="toggleSidebar()" class="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+    </div>
+    <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
+        <a href="/dashboard" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm {{if eq .ActiveMenu "dashboard"}}bg-blue-600/20 text-blue-400 border border-blue-500/20{{else}}text-slate-400 hover:text-white hover:bg-slate-800{{end}} transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            Dashboard
+        </a>
+        <a href="/dashboard/alumni" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm {{if eq .ActiveMenu "alumni"}}bg-blue-600/20 text-blue-400 border border-blue-500/20{{else}}text-slate-400 hover:text-white hover:bg-slate-800{{end}} transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            Data Alumni
+        </a>
+        <a href="/dashboard/papan" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm {{if eq .ActiveMenu "papan"}}bg-blue-600/20 text-blue-400 border border-blue-500/20{{else}}text-slate-400 hover:text-white hover:bg-slate-800{{end}} transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 4a2 2 0 00-2-2v3m2-3V9m0 10a2 2 0 002-2v-5a2 2 0 00-2-2H9"/></svg>
+            Papan Pengumuman
+        </a>
+        {{if eq .User.Role "super_admin"}}
+        <a href="/dashboard/users" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm {{if eq .ActiveMenu "users"}}bg-blue-600/20 text-blue-400 border border-blue-500/20{{else}}text-slate-400 hover:text-white hover:bg-slate-800{{end}} transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            Manajemen User
+        </a>
+        {{end}}
+    </nav>
+    <div class="p-4 border-t border-slate-800">
+        <div class="flex items-center gap-3 mb-3">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-sm font-bold">
+                {{slice .User.Username 0 1}}
+            </div>
+            <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium text-white truncate">{{.User.Username}}</p>
+                <p class="text-xs text-slate-500 capitalize">{{.User.Role}}</p>
+            </div>
+        </div>
+        <a href="/logout" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-red-400 hover:bg-red-500/10 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+            Keluar
+        </a>
+    </div>
+</aside>
+
+<script>
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const backdrop = document.getElementById('sidebar-backdrop');
+        const isOpen = !sidebar.classList.contains('-translate-x-full');
+        
+        if (isOpen) {
+            sidebar.classList.add('-translate-x-full');
+            backdrop.classList.add('opacity-0');
+            setTimeout(() => backdrop.classList.add('hidden'), 300);
+        } else {
+            backdrop.classList.remove('hidden');
+            setTimeout(() => {
+                backdrop.classList.remove('opacity-0');
+            }, 10);
+            sidebar.classList.remove('-translate-x-full');
+        }
+    }
+</script>
+
+<!-- Custom Premium Confirmation Modal -->
+<div id="customConfirmModal" class="fixed inset-0 z-[9999] hidden flex items-center justify-center p-4">
+    <!-- Overlay -->
+    <div class="absolute inset-0 bg-slate-950/60 backdrop-blur-md transition-opacity duration-300 opacity-0" id="confirmModalOverlay"></div>
+    
+    <!-- Card Content -->
+    <div class="relative w-full max-w-md bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-2xl backdrop-blur-xl transform transition-all duration-300 scale-90 opacity-0" id="confirmModalCard">
+        <!-- Icon & Header -->
+        <div class="flex flex-col items-center text-center gap-4">
+            <div class="w-12 h-12 rounded-full bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-500 animate-pulse">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+            </div>
+            <div>
+                <h3 class="text-base font-bold text-white">Konfirmasi Hapus</h3>
+                <p class="text-xs text-slate-400 mt-2 leading-relaxed px-2" id="confirmModalMessage">Yakin ingin menghapus data ini?</p>
+            </div>
+        </div>
+        
+        <!-- Actions -->
+        <div class="flex items-center gap-3 mt-6">
+            <button type="button" id="confirmModalCancelBtn" class="flex-1 py-2 px-4 bg-slate-800 hover:bg-slate-700 active:bg-slate-700/80 rounded-lg text-xs font-semibold text-slate-300 border border-slate-700/50 transition-all duration-150">
+                Batal
+            </button>
+            <button type="button" id="confirmModalConfirmBtn" class="flex-1 py-2 px-4 bg-rose-600 hover:bg-rose-500 active:bg-rose-700 rounded-lg text-xs font-semibold text-white shadow-lg shadow-rose-600/20 transition-all duration-150">
+                Hapus
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('customConfirmModal');
+    const overlay = document.getElementById('confirmModalOverlay');
+    const card = document.getElementById('confirmModalCard');
+    const messageEl = document.getElementById('confirmModalMessage');
+    const cancelBtn = document.getElementById('confirmModalCancelBtn');
+    const confirmBtn = document.getElementById('confirmModalConfirmBtn');
+    
+    let onConfirmCallback = null;
+    
+    function showCustomConfirmModal(message, callback) {
+        messageEl.textContent = message;
+        onConfirmCallback = callback;
+        
+        // Show container
+        modal.classList.remove('hidden');
+        
+        // Trigger reflow for transition
+        void modal.offsetWidth;
+        
+        // Add active classes
+        overlay.classList.remove('opacity-0');
+        overlay.classList.add('opacity-100');
+        
+        card.classList.remove('scale-90', 'opacity-0');
+        card.classList.add('scale-100', 'opacity-100');
+    }
+    
+    function hideCustomConfirmModal() {
+        overlay.classList.remove('opacity-100');
+        overlay.classList.add('opacity-0');
+        
+        card.classList.remove('scale-100', 'opacity-100');
+        card.classList.add('scale-90', 'opacity-0');
+        
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            onConfirmCallback = null;
+        }, 300);
+    }
+    
+    cancelBtn.addEventListener('click', hideCustomConfirmModal);
+    overlay.addEventListener('click', hideCustomConfirmModal);
+    
+    confirmBtn.addEventListener('click', function() {
+        if (onConfirmCallback) {
+            onConfirmCallback();
+        }
+        hideCustomConfirmModal();
+    });
+    
+    // Intercept all form submissions that have data-confirm attribute
+    document.addEventListener('submit', function(e) {
+        const form = e.target;
+        const confirmMsg = form.getAttribute('data-confirm');
+        
+        if (confirmMsg && !form.dataset.confirmed) {
+            e.preventDefault();
+            
+            showCustomConfirmModal(confirmMsg, function() {
+                form.dataset.confirmed = 'true';
+                form.submit();
+            });
+        }
+    });
+});
+</script>
+{{end}}
+
+{{define "mobile_header"}}
+<header class="lg:hidden flex items-center justify-between px-4 py-3 bg-slate-900 border-b border-slate-800 sticky top-0 z-30">
+    <div class="flex items-center gap-3">
+        <button onclick="toggleSidebar()" class="p-2 -ml-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <span class="font-bold text-white text-base">Alumni Tracker</span>
+    </div>
+    <div class="flex items-center gap-2">
+        <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold px-2 py-1 bg-slate-800 rounded-full border border-slate-700/50">{{.User.Role}}</span>
+    </div>
+</header>
+{{end}}

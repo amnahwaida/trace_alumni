@@ -1,0 +1,30 @@
+# Build artifacts
+server
+*.exe
+
+# Data & backups (these are volume-mounted, not baked into image)
+data/
+backups/
+
+# Version control
+.git
+.gitignore
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Documentation
+*.md
+LICENSE
+
+# Docker (avoid recursive build context)
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Scripts (not needed in container)
+scripts/

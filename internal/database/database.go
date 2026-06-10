@@ -1,0 +1,157 @@
+package database
+
+import (
+	"database/sql"
+	"fmt"
+	"log"
+	"os"
+	"path/filepath"
+
+	_ "modernc.org/sqlite"
+)
+
+var DB *sql.DB
+
+func InitDB(dataDir string) error {
+	// Ensure data directory exists
+	if err := os.MkdirAll(dataDir, 0755); err != nil {
+		return fmt.Errorf("failed to create data directory: %w", err)
+	}
+
+	// Ensure uploads directory exists
+	uploadsDir := filepath.Join(dataDir, "uploads")
+	if err := os.MkdirAll(uploadsDir, 0755); err != nil {
+		return fmt.Errorf("failed to create uploads directory: %w", err)
+	}
+
+	dbPath := filepath.Join(dataDir, "alumni.db")
+	var err error
+	DB, err = sql.Open("sqlite", dbPath+"?_journal_mode=WAL&_busy_timeout=5000")
+	if err != nil {
+		return fmt.Errorf("failed to open database: %w", err)
+	}
+
+	// Enable WAL mode and foreign keys
+	if _, err := DB.Exec("PRAGMA journal_mode=WAL"); err != nil {
+		return fmt.Errorf("failed to set WAL mode: %w", err)
+	}
+	if _, err := DB.Exec("PRAGMA foreign_keys=ON"); err != nil {
+		return fmt.Errorf("failed to enable foreign keys: %w", err)
+	}
+
+	// Set connection pool for SQLite (single writer)
+	DB.SetMaxOpenConns(1)
+
+	log.Println("✅ Database connected:", dbPath)
+	return nil
+}
+
+func RunMigrations() error {
+	migrations := []string{
+		`CREATE TABLE IF NOT EXISTS users (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			username TEXT UNIQUE NOT NULL,
+			password_hash TEXT NOT NULL,
+			role TEXT CHECK(role IN ('super_admin', 'admin', 'staff')) NOT NULL,
+			created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+		)`,
+		`CREATE TABLE IF NOT EXISTS alumni (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			nama_lengkap TEXT NOT NULL,
+			alamat_asli TEXT,
+			domisili_sekarang TEXT,
+			no_hp TEXT,
+			email TEXT,
+			tahun_lulus INTEGER NOT NULL,
+			tanggal_lahir DATE,
+			pekerjaan TEXT,
+			instansi TEXT,
+			url_linkedin TEXT,
+			foto_profil TEXT,
+			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+		)`,
+		`CREATE INDEX IF NOT EXISTS idx_alumni_search ON alumni(nama_lengkap, tahun_lulus)`,
+		`CREATE TABLE IF NOT EXISTS info_papan (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			judul TEXT NOT NULL,
+			deskripsi TEXT NOT NULL,
+			link_eksternal TEXT,
+			kategori TEXT DEFAULT 'umum' CHECK(kategori IN ('loker', 'beasiswa', 'reuni', 'umum')),
+			dibuat_oleh INTEGER REFERENCES users(id),
+			dibuat_pada DATETIME DEFAULT CURRENT_TIMESTAMP
+		)`,
+		`CREATE TABLE IF NOT EXISTS sessions (
+			id TEXT PRIMARY KEY,
+			user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+			expires_at DATETIME NOT NULL,
+			created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+		)`,
+	}
+
+	for _, m := range migrations {
+		if _, err := DB.Exec(m); err != nil {
+			return fmt.Errorf("migration failed: %w\nSQL: %s", err, m)
+		}
+	}
+
+	// Dynamic schema updates for settings and info_papan status
+	_, _ = DB.Exec(`CREATE TABLE IF NOT EXISTS settings (
+		key TEXT PRIMARY KEY,
+		value TEXT NOT NULL
+	)`)
+	_, _ = DB.Exec(`INSERT OR IGNORE INTO settings (key, value) VALUES ('papan_enabled', '1')`)
+
+	var hasIsActive bool
+	rows, err := DB.Query("PRAGMA table_info(info_papan)")
+	if err == nil {
+		for rows.Next() {
+			var cid int
+			var name, ctype string
+			var notnull, pk int
+			var dfltVal interface{}
+			if err := rows.Scan(&cid, &name, &ctype, &notnull, &dfltVal, &pk); err == nil {
+				if name == "is_active" {
+					hasIsActive = true
+				}
+			}
+		}
+		rows.Close()
+	}
+	if !hasIsActive {
+		if _, err := DB.Exec("ALTER TABLE info_papan ADD COLUMN is_active INTEGER DEFAULT 1"); err != nil {
+			log.Printf("Failed to add is_active column: %v", err)
+		}
+	}
+
+	var hasAktifSampai bool
+	rows, err = DB.Query("PRAGMA table_info(info_papan)")
+	if err == nil {
+		for rows.Next() {
+			var cid int
+			var name, ctype string
+			var notnull, pk int
+			var dfltVal interface{}
+			if err := rows.Scan(&cid, &name, &ctype, &notnull, &dfltVal, &pk); err == nil {
+				if name == "aktif_sampai" {
+					hasAktifSampai = true
+				}
+			}
+		}
+		rows.Close()
+	}
+	if !hasAktifSampai {
+		if _, err := DB.Exec("ALTER TABLE info_papan ADD COLUMN aktif_sampai DATETIME"); err != nil {
+			log.Printf("Failed to add aktif_sampai column: %v", err)
+		}
+	}
+
+	log.Println("✅ Database migrations completed")
+	return nil
+}
+
+func Close() {
+	if DB != nil {
+		DB.Close()
+	}
+}
