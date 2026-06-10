@@ -33,12 +33,7 @@
             <form method="POST" action="/dashboard/settings/save" enctype="multipart/form-data" class="space-y-6">
                 <!-- School Name -->
                 <div class="space-y-2">
-                    <div class="flex justify-between items-center">
-                        <label for="school_name" class="block text-sm font-semibold text-slate-300">Nama Sekolah / Instansi</label>
-                        <button type="button" onclick="resetSetting('school_name')" class="text-xs font-semibold text-red-400 hover:text-red-300 hover:underline focus:outline-none transition-colors">
-                            Reset ke Default
-                        </button>
-                    </div>
+                    <label for="school_name" class="block text-sm font-semibold text-slate-300">Nama Sekolah / Instansi</label>
                     <input type="text" id="school_name" name="school_name" value="{{.Settings.school_name}}" required
                         class="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-lg text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm transition-all duration-200">
                     <p class="text-xs text-slate-500">Akan digunakan pada landing page, sidebar, dan judul halaman.</p>
@@ -46,12 +41,7 @@
 
                 <!-- Project Credit -->
                 <div class="space-y-2">
-                    <div class="flex justify-between items-center">
-                        <label for="project_credit" class="block text-sm font-semibold text-slate-300">Credit Project (Footer)</label>
-                        <button type="button" onclick="resetSetting('project_credit')" class="text-xs font-semibold text-red-400 hover:text-red-300 hover:underline focus:outline-none transition-colors">
-                            Reset ke Default
-                        </button>
-                    </div>
+                    <label for="project_credit" class="block text-sm font-semibold text-slate-300">Credit Project (Footer)</label>
                     <input type="text" id="project_credit" name="project_credit" value="{{.Settings.project_credit}}" required
                         class="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-lg text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm transition-all duration-200">
                     <p class="text-xs text-slate-500">Pemberitahuan hak cipta di bagian bawah halaman.</p>
@@ -59,14 +49,7 @@
 
                 <!-- Logo Section -->
                 <div class="space-y-3 pt-2 border-t border-slate-800">
-                    <div class="flex justify-between items-center">
-                        <label class="block text-sm font-semibold text-slate-300">Logo Aplikasi</label>
-                        {{if .Settings.logo_path}}
-                        <button type="button" onclick="resetSetting('logo_path')" class="text-xs font-semibold text-red-400 hover:text-red-300 hover:underline focus:outline-none transition-colors">
-                            Reset ke Default
-                        </button>
-                        {{end}}
-                    </div>
+                    <label class="block text-sm font-semibold text-slate-300">Logo Aplikasi</label>
                     <div class="flex items-center gap-6">
                         <div class="w-16 h-16 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center overflow-hidden p-2 flex-shrink-0">
                             {{if .Settings.logo_path}}
@@ -91,14 +74,7 @@
 
                 <!-- Favicon Section -->
                 <div class="space-y-3 pt-2 border-t border-slate-800">
-                    <div class="flex justify-between items-center">
-                        <label class="block text-sm font-semibold text-slate-300">Favicon Aplikasi</label>
-                        {{if .Settings.favicon_path}}
-                        <button type="button" onclick="resetSetting('favicon_path')" class="text-xs font-semibold text-red-400 hover:text-red-300 hover:underline focus:outline-none transition-colors">
-                            Reset ke Default
-                        </button>
-                        {{end}}
-                    </div>
+                    <label class="block text-sm font-semibold text-slate-300">Favicon Aplikasi</label>
                     <div class="flex items-center gap-6">
                         <div class="w-16 h-16 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center overflow-hidden p-2 flex-shrink-0">
                             {{if .Settings.favicon_path}}
@@ -121,19 +97,76 @@
                     </div>
                 </div>
 
-                <!-- Buttons -->
+                <!-- Save Button -->
                 <div class="pt-4 border-t border-slate-800 flex items-center justify-end gap-3">
                     <button type="submit" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-sm font-semibold transition-colors shadow-lg shadow-blue-600/15">
                         Simpan Perubahan
                     </button>
                 </div>
             </form>
+
+            <!-- Reset to Default Section -->
+            <div class="mt-6 pt-6 border-t border-red-500/20">
+                <h3 class="text-sm font-semibold text-red-400 mb-4 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                    Reset ke Nilai Default
+                </h3>
+                <div class="space-y-3">
+                    <!-- Reset School Name -->
+                    <form method="POST" action="/dashboard/settings/reset" class="flex items-center justify-between bg-slate-950/50 rounded-lg px-4 py-3 border border-slate-800/50">
+                        <input type="hidden" name="key" value="school_name">
+                        <div>
+                            <p class="text-xs font-semibold text-slate-300">Nama Sekolah</p>
+                            <p class="text-[10px] text-slate-500 mt-0.5">Default: SMAS Muhammadiyah 1 Ngawi</p>
+                        </div>
+                        <button type="submit" class="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 rounded-lg text-xs font-semibold border border-red-500/20 hover:border-red-500/30 transition-all">
+                            Reset
+                        </button>
+                    </form>
+
+                    <!-- Reset Project Credit -->
+                    <form method="POST" action="/dashboard/settings/reset" class="flex items-center justify-between bg-slate-950/50 rounded-lg px-4 py-3 border border-slate-800/50">
+                        <input type="hidden" name="key" value="project_credit">
+                        <div>
+                            <p class="text-xs font-semibold text-slate-300">Credit Project</p>
+                            <p class="text-[10px] text-slate-500 mt-0.5">Default: © 2026 SMAS Muhammadiyah 1 Ngawi...</p>
+                        </div>
+                        <button type="submit" class="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 rounded-lg text-xs font-semibold border border-red-500/20 hover:border-red-500/30 transition-all">
+                            Reset
+                        </button>
+                    </form>
+
+                    <!-- Reset Logo -->
+                    {{if .Settings.logo_path}}
+                    <form method="POST" action="/dashboard/settings/reset" class="flex items-center justify-between bg-slate-950/50 rounded-lg px-4 py-3 border border-slate-800/50">
+                        <input type="hidden" name="key" value="logo_path">
+                        <div>
+                            <p class="text-xs font-semibold text-slate-300">Logo Aplikasi</p>
+                            <p class="text-[10px] text-slate-500 mt-0.5">Hapus logo kustom dan gunakan default</p>
+                        </div>
+                        <button type="submit" class="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 rounded-lg text-xs font-semibold border border-red-500/20 hover:border-red-500/30 transition-all">
+                            Reset
+                        </button>
+                    </form>
+                    {{end}}
+
+                    <!-- Reset Favicon -->
+                    {{if .Settings.favicon_path}}
+                    <form method="POST" action="/dashboard/settings/reset" class="flex items-center justify-between bg-slate-950/50 rounded-lg px-4 py-3 border border-slate-800/50">
+                        <input type="hidden" name="key" value="favicon_path">
+                        <div>
+                            <p class="text-xs font-semibold text-slate-300">Favicon Aplikasi</p>
+                            <p class="text-[10px] text-slate-500 mt-0.5">Hapus favicon kustom dan gunakan default</p>
+                        </div>
+                        <button type="submit" class="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 rounded-lg text-xs font-semibold border border-red-500/20 hover:border-red-500/30 transition-all">
+                            Reset
+                        </button>
+                    </form>
+                    {{end}}
+                </div>
+            </div>
         </div>
     </main>
-
-    <form id="reset-form" action="/dashboard/settings/reset" method="POST" class="hidden">
-        <input type="hidden" name="key" id="reset-key">
-    </form>
 
     <script>
         function previewImage(input, previewId, placeholderId) {
@@ -150,20 +183,6 @@
                     }
                 }
                 reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        function resetSetting(key) {
-            let fieldName = "";
-            switch(key) {
-                case "school_name": fieldName = "Nama Sekolah"; break;
-                case "project_credit": fieldName = "Credit Project"; break;
-                case "logo_path": fieldName = "Logo Aplikasi"; break;
-                case "favicon_path": fieldName = "Favicon Aplikasi"; break;
-            }
-            if (confirm(`Apakah Anda yakin ingin meriset ${fieldName} ke nilai default?`)) {
-                document.getElementById('reset-key').value = key;
-                document.getElementById('reset-form').submit();
             }
         }
     </script>
