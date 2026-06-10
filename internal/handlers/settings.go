@@ -99,6 +99,57 @@ func SettingsSave(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/dashboard/settings?success=Pengaturan+berhasil+disimpan", 303)
 }
 
+// SettingsReset handles resetting a configuration key to its default value
+func SettingsReset(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	key := r.FormValue("key")
+	var defaultValue string
+	var isFile bool
+
+	switch key {
+	case "school_name":
+		defaultValue = "SMAS Muhammadiyah 1 Ngawi"
+	case "project_credit":
+		defaultValue = "© 2026 SMAS Muhammadiyah 1 Ngawi. Sistem Rekam Jejak Alumni."
+	case "logo_path":
+		defaultValue = ""
+		isFile = true
+	case "favicon_path":
+		defaultValue = ""
+		isFile = true
+	default:
+		http.Redirect(w, r, "/dashboard/settings?error=Kunci+pengaturan+tidak+valid", 303)
+		return
+	}
+
+	if isFile {
+		// Get current file path to delete it
+		var oldPath string
+		_ = database.DB.QueryRow("SELECT value FROM settings WHERE key = ?", key).Scan(&oldPath)
+		if oldPath != "" {
+			dataDir := os.Getenv("DATA_DIR")
+			if dataDir == "" {
+				dataDir = "./data"
+			}
+			filename := filepath.Base(oldPath)
+			oldFile := filepath.Join(dataDir, "uploads", filename)
+			_ = os.Remove(oldFile)
+		}
+	}
+
+	_, err := database.DB.Exec("UPDATE settings SET value = ? WHERE key = ?", defaultValue, key)
+	if err != nil {
+		http.Redirect(w, r, "/dashboard/settings?error=Gagal+meriset+pengaturan", 303)
+		return
+	}
+
+	http.Redirect(w, r, "/dashboard/settings?success=Pengaturan+berhasil+direset+ke+default", 303)
+}
+
 func processUploadedLogo(r *http.Request, fieldName string) (string, error) {
 	file, header, err := r.FormFile(fieldName)
 	if err != nil {
