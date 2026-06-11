@@ -1,5 +1,6 @@
 # Build artifacts
-/server
+server
+!cmd/
 *.exe
 
 # Data & backups (these are volume-mounted, not baked into image)
