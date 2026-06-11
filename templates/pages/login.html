@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - {{if .Settings.school_name}}{{.Settings.school_name}}{{else}}Rekam Jejak Alumni{{end}}</title>
     <link rel="icon" type="image/x-icon" href="{{if .Settings.favicon_path}}{{.Settings.favicon_path}}{{else}}/static/favicon.ico{{end}}">
+    <!-- PWA settings -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <link rel="apple-touch-icon" href="/static/icon-192.png">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -15,6 +20,15 @@
         .gradient-bg { background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%); }
         .glow { box-shadow: 0 0 40px rgba(59,130,246,0.15); }
     </style>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('PWA ServiceWorker registered with scope: ', reg.scope))
+                    .catch(err => console.error('PWA ServiceWorker registration failed: ', err));
+            });
+        }
+    </script>
 </head>
 <body class="gradient-bg min-h-screen flex items-center justify-center p-4">
     <div class="w-full max-w-md">

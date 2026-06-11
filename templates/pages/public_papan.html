@@ -7,6 +7,11 @@
     <title>{{if .Settings.school_name}}{{.Settings.school_name}}{{else}}SMAS Muhammadiyah 1 Ngawi{{end}} - Informasi</title>
     <meta name="description" content="Papan Informasi, lowongan kerja, reuni, dan beasiswa untuk alumni {{if .Settings.school_name}}{{.Settings.school_name}}{{else}}SMAS Muhammadiyah 1 Ngawi{{end}}.">
     <link rel="icon" type="image/x-icon" href="{{if .Settings.favicon_path}}{{.Settings.favicon_path}}{{else}}/static/favicon.ico{{end}}">
+    <!-- PWA settings -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <link rel="apple-touch-icon" href="/static/icon-192.png">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -28,6 +33,15 @@
             transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease-out;
         }
     </style>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('PWA ServiceWorker registered with scope: ', reg.scope))
+                    .catch(err => console.error('PWA ServiceWorker registration failed: ', err));
+            });
+        }
+    </script>
 </head>
 <body class="gradient-bg min-h-screen text-white flex flex-col">
     <!-- Navbar -->

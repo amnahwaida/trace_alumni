@@ -7,6 +7,11 @@
     <title>{{if .Settings.school_name}}{{.Settings.school_name}}{{else}}SMAS Muhammadiyah 1 Ngawi{{end}} - Alumni Tracker</title>
     <meta name="description" content="Sistem pencarian dan rekam jejak alumni {{if .Settings.school_name}}{{.Settings.school_name}}{{else}}SMAS Muhammadiyah 1 Ngawi{{end}}. Temukan teman alumni Anda.">
     <link rel="icon" type="image/x-icon" href="{{if .Settings.favicon_path}}{{.Settings.favicon_path}}{{else}}/static/favicon.ico{{end}}">
+    <!-- PWA settings -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <link rel="apple-touch-icon" href="/static/icon-192.png">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/htmx.org@1.9.12"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -21,6 +26,15 @@
         .float { animation: float 6s ease-in-out infinite; }
         .hero-pattern { background-image: radial-gradient(rgba(59,130,246,0.1) 1px, transparent 1px); background-size: 40px 40px; }
     </style>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('PWA ServiceWorker registered with scope: ', reg.scope))
+                    .catch(err => console.error('PWA ServiceWorker registration failed: ', err));
+            });
+        }
+    </script>
 </head>
 <body class="gradient-bg min-h-screen text-white flex flex-col">
     <!-- Navbar -->
