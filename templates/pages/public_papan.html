@@ -48,7 +48,7 @@
                     Papan Pengumuman
                 </h1>
                 <p class="text-xs sm:text-sm text-slate-400 max-w-lg mx-auto leading-relaxed">
-                    {{if .Settings.papan_description}}{{.Settings.papan_description}}{{else}}Temukan info lowongan kerja, beasiswa, agenda reuni, dan informasi penting lainnya.{{end}}
+                    {{if .Settings.papan_description}}{{.Settings.papan_description | safeHTML}}{{else}}Temukan info lowongan kerja, beasiswa, agenda reuni, dan informasi penting lainnya.{{end}}
                 </p>
             </div>
 
@@ -108,7 +108,7 @@
     <!-- Footer -->
     <footer class="border-t border-slate-800/80 py-8 px-4">
         <div class="max-w-6xl mx-auto text-center text-slate-500 text-xs sm:text-sm">
-            <p>{{if .Settings.project_credit}}{{.Settings.project_credit}}{{else}}&copy; 2026 SMAS Muhammadiyah 1 Ngawi. Sistem Rekam Jejak Alumni.{{end}}</p>
+            <p>{{if .Settings.project_credit}}{{.Settings.project_credit | safeHTML}}{{else}}&copy; 2026 SMAS Muhammadiyah 1 Ngawi. Sistem Rekam Jejak Alumni.{{end}}</p>
         </div>
     </footer>
 </body>

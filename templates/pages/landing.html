@@ -98,7 +98,7 @@
     <!-- Footer -->
     <footer class="border-t border-slate-800 py-8 px-4">
         <div class="max-w-6xl mx-auto text-center text-slate-500 text-xs sm:text-sm">
-            <p>{{if .Settings.project_credit}}{{.Settings.project_credit}}{{else}}&copy; 2026 SMAS Muhammadiyah 1 Ngawi. Sistem Rekam Jejak Alumni.{{end}}</p>
+            <p>{{if .Settings.project_credit}}{{.Settings.project_credit | safeHTML}}{{else}}&copy; 2026 SMAS Muhammadiyah 1 Ngawi. Sistem Rekam Jejak Alumni.{{end}}</p>
         </div>
     </footer>
 </body>
