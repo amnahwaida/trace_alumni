@@ -48,7 +48,7 @@
                     Papan Pengumuman
                 </h1>
                 <p class="text-xs sm:text-sm text-slate-400 max-w-lg mx-auto leading-relaxed">
-                    Temukan info lowongan kerja, beasiswa, agenda reuni, dan informasi penting lainnya.
+                    {{if .Settings.papan_description}}{{.Settings.papan_description}}{{else}}Temukan info lowongan kerja, beasiswa, agenda reuni, dan informasi penting lainnya.{{end}}
                 </p>
             </div>
 

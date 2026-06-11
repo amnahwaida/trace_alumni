@@ -42,15 +42,17 @@ func SettingsSave(w http.ResponseWriter, r *http.Request) {
 
 	schoolName := strings.TrimSpace(r.FormValue("school_name"))
 	projectCredit := strings.TrimSpace(r.FormValue("project_credit"))
+	papanDescription := strings.TrimSpace(r.FormValue("papan_description"))
 
-	if schoolName == "" || projectCredit == "" {
-		http.Redirect(w, r, "/dashboard/settings?error=Nama+sekolah+dan+credit+tidak+boleh+kosong", 303)
+	if schoolName == "" || projectCredit == "" || papanDescription == "" {
+		http.Redirect(w, r, "/dashboard/settings?error=Nama+sekolah,+credit+dan+deskripsi+papan+tidak+boleh+kosong", 303)
 		return
 	}
 
 	// Update text configurations in database
 	_, _ = database.DB.Exec("UPDATE settings SET value = ? WHERE key = 'school_name'", schoolName)
 	_, _ = database.DB.Exec("UPDATE settings SET value = ? WHERE key = 'project_credit'", projectCredit)
+	_, _ = database.DB.Exec("UPDATE settings SET value = ? WHERE key = 'papan_description'", papanDescription)
 
 	// Process logo file
 	logoPath, err := processUploadedLogo(r, "logo")
@@ -115,6 +117,8 @@ func SettingsReset(w http.ResponseWriter, r *http.Request) {
 		defaultValue = "SMAS Muhammadiyah 1 Ngawi"
 	case "project_credit":
 		defaultValue = "© 2026 SMAS Muhammadiyah 1 Ngawi. Sistem Rekam Jejak Alumni."
+	case "papan_description":
+		defaultValue = "Temukan info lowongan kerja, beasiswa, agenda reuni, dan informasi penting lainnya."
 	case "logo_path":
 		defaultValue = ""
 		isFile = true
