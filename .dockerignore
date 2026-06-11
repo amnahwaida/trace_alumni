@@ -1,6 +1,4 @@
 # Build artifacts
-server
-!cmd/
 *.exe
 
 # Data & backups (these are volume-mounted, not baked into image)
@@ -29,3 +27,7 @@ docker-compose.yml
 
 # Scripts (not needed in container)
 scripts/
+
+# Environment
+.env
+.env.example
