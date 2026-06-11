@@ -3,6 +3,7 @@
 services:
   alumni-tracker:
     build: .
+    image: alumni-tracker:latest
     container_name: alumni-tracker
     restart: unless-stopped
     ports:
