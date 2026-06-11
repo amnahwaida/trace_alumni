@@ -5,6 +5,9 @@ server
 # Data
 data/
 
+# Environment
+.env
+
 # IDE
 .idea/
 .vscode/
