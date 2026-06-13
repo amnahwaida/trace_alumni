@@ -36,38 +36,38 @@
         </div>
 
         <!-- Stats Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 hover:border-blue-500/30 transition-colors">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="w-10 h-10 rounded-lg bg-blue-600/20 flex items-center justify-center">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5 mb-8">
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 sm:p-6 hover:border-blue-500/30 transition-colors">
+                <div class="flex items-center justify-between mb-2 sm:mb-4">
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-blue-600/20 flex items-center justify-center">
                         <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                     </div>
                 </div>
-                <p class="text-3xl font-bold">{{.TotalAlumni}}</p>
-                <p class="text-sm text-slate-400 mt-1">Total Alumni</p>
+                <p class="text-2xl sm:text-3xl font-bold">{{.TotalAlumni}}</p>
+                <p class="text-[11px] sm:text-sm text-slate-400 mt-0.5 sm:mt-1">Total Alumni</p>
             </div>
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 hover:border-green-500/30 transition-colors">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="w-10 h-10 rounded-lg bg-green-600/20 flex items-center justify-center">
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 sm:p-6 hover:border-green-500/30 transition-colors">
+                <div class="flex items-center justify-between mb-2 sm:mb-4">
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-green-600/20 flex items-center justify-center">
                         <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
                     </div>
                 </div>
-                <p class="text-3xl font-bold">{{.TotalPengumuman}}</p>
-                <p class="text-sm text-slate-400 mt-1">Pengumuman</p>
+                <p class="text-2xl sm:text-3xl font-bold">{{.TotalPengumuman}}</p>
+                <p class="text-[11px] sm:text-sm text-slate-400 mt-0.5 sm:mt-1">Pengumuman</p>
             </div>
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 hover:border-purple-500/30 transition-colors">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="w-10 h-10 rounded-lg bg-purple-600/20 flex items-center justify-center">
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 sm:p-6 hover:border-purple-500/30 transition-colors">
+                <div class="flex items-center justify-between mb-2 sm:mb-4">
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-purple-600/20 flex items-center justify-center">
                         <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                     </div>
                 </div>
-                <p class="text-3xl font-bold">{{.TotalUsers}}</p>
-                <p class="text-sm text-slate-400 mt-1">Pengguna Sistem</p>
+                <p class="text-2xl sm:text-3xl font-bold">{{.TotalUsers}}</p>
+                <p class="text-[11px] sm:text-sm text-slate-400 mt-0.5 sm:mt-1">Pengguna Sistem</p>
             </div>
             {{if or (eq .User.Role "super_admin") (eq .User.Role "admin")}}
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 hover:border-amber-500/30 transition-colors">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="w-10 h-10 rounded-lg bg-amber-600/20 flex items-center justify-center">
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 sm:p-6 hover:border-amber-500/30 transition-colors">
+                <div class="flex items-center justify-between mb-2 sm:mb-4">
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-amber-600/20 flex items-center justify-center">
                         <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     </div>
                     {{if gt .TotalPending 0}}
@@ -77,12 +77,12 @@
                     </span>
                     {{end}}
                 </div>
-                <p class="text-3xl font-bold">{{.TotalPending}}</p>
-                <p class="text-sm text-slate-400 mt-1">Pending Verifikasi</p>
+                <p class="text-2xl sm:text-3xl font-bold">{{.TotalPending}}</p>
+                <p class="text-[11px] sm:text-sm text-slate-400 mt-0.5 sm:mt-1">Pending Verifikasi</p>
             </div>
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 hover:border-cyan-500/30 transition-colors">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="w-10 h-10 rounded-lg bg-cyan-600/20 flex items-center justify-center">
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 sm:p-6 hover:border-cyan-500/30 transition-colors">
+                <div class="flex items-center justify-between mb-2 sm:mb-4">
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-cyan-600/20 flex items-center justify-center">
                         <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                     </div>
                     {{if gt .TotalPendingClaims 0}}
@@ -92,70 +92,70 @@
                     </span>
                     {{end}}
                 </div>
-                <p class="text-3xl font-bold">{{.TotalPendingClaims}}</p>
-                <p class="text-sm text-slate-400 mt-1">Permintaan Update</p>
+                <p class="text-2xl sm:text-3xl font-bold">{{.TotalPendingClaims}}</p>
+                <p class="text-[11px] sm:text-sm text-slate-400 mt-0.5 sm:mt-1">Permintaan Update</p>
             </div>
             {{end}}
         </div>
 
         <!-- Quick Actions -->
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 sm:p-6">
             <h2 class="text-lg font-semibold mb-4">Aksi Cepat</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
                 {{if or (eq .User.Role "super_admin") (eq .User.Role "admin")}}
-                <a href="/dashboard/alumni/create" class="flex items-center gap-3 p-4 rounded-lg bg-slate-800/50 border border-slate-700/50 hover:border-blue-500/30 hover:bg-slate-800 transition-all group">
-                    <div class="w-10 h-10 rounded-lg bg-blue-600/20 flex items-center justify-center group-hover:bg-blue-600/30 transition-colors">
-                        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+                <a href="/dashboard/alumni/create" class="flex items-center gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg bg-slate-800/50 border border-slate-700/50 hover:border-blue-500/30 hover:bg-slate-800 transition-all group">
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-blue-600/20 flex items-center justify-center group-hover:bg-blue-600/30 transition-colors">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
                     </div>
                     <div>
-                        <p class="text-sm font-medium text-white">Tambah Alumni</p>
-                        <p class="text-xs text-slate-500">Input data baru</p>
+                        <p class="text-xs sm:text-sm font-medium text-white">Tambah Alumni</p>
+                        <p class="text-[10px] sm:text-xs text-slate-500 hidden sm:block">Input data baru</p>
                     </div>
                 </a>
-                <a href="/dashboard/alumni/verify" class="flex items-center gap-3 p-4 rounded-lg bg-slate-800/50 border border-slate-700/50 hover:border-amber-500/30 hover:bg-slate-800 transition-all group">
-                    <div class="w-10 h-10 rounded-lg bg-amber-600/20 flex items-center justify-center group-hover:bg-amber-600/30 transition-colors">
-                        <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <a href="/dashboard/alumni/verify" class="flex items-center gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg bg-slate-800/50 border border-slate-700/50 hover:border-amber-500/30 hover:bg-slate-800 transition-all group">
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-amber-600/20 flex items-center justify-center group-hover:bg-amber-600/30 transition-colors">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     </div>
                     <div>
-                        <p class="text-sm font-medium text-white">Verifikasi Alumni</p>
-                        <p class="text-xs text-slate-500">Persetujuan pendaftaran</p>
+                        <p class="text-xs sm:text-sm font-medium text-white">Verifikasi Alumni</p>
+                        <p class="text-[10px] sm:text-xs text-slate-500 hidden sm:block">Persetujuan pendaftaran</p>
                     </div>
                 </a>
-                <a href="/dashboard/alumni/claims" class="flex items-center gap-3 p-4 rounded-lg bg-slate-800/50 border border-slate-700/50 hover:border-cyan-500/30 hover:bg-slate-800 transition-all group">
-                    <div class="w-10 h-10 rounded-lg bg-cyan-600/20 flex items-center justify-center group-hover:bg-cyan-600/30 transition-colors">
-                        <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                <a href="/dashboard/alumni/claims" class="flex items-center gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg bg-slate-800/50 border border-slate-700/50 hover:border-cyan-500/30 hover:bg-slate-800 transition-all group">
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-cyan-600/20 flex items-center justify-center group-hover:bg-cyan-600/30 transition-colors">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                     </div>
                     <div>
-                        <p class="text-sm font-medium text-white">Permintaan Update</p>
-                        <p class="text-xs text-slate-500">Klaim & perbarui profil</p>
+                        <p class="text-xs sm:text-sm font-medium text-white">Permintaan Update</p>
+                        <p class="text-[10px] sm:text-xs text-slate-500 hidden sm:block">Klaim & perbarui profil</p>
                     </div>
                 </a>
                 {{end}}
-                <a href="/dashboard/alumni" class="flex items-center gap-3 p-4 rounded-lg bg-slate-800/50 border border-slate-700/50 hover:border-green-500/30 hover:bg-slate-800 transition-all group">
-                    <div class="w-10 h-10 rounded-lg bg-green-600/20 flex items-center justify-center group-hover:bg-green-600/30 transition-colors">
-                        <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+                <a href="/dashboard/alumni" class="flex items-center gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg bg-slate-800/50 border border-slate-700/50 hover:border-green-500/30 hover:bg-slate-800 transition-all group">
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-green-600/20 flex items-center justify-center group-hover:bg-green-600/30 transition-colors">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
                     </div>
                     <div>
-                        <p class="text-sm font-medium text-white">Lihat Data</p>
-                        <p class="text-xs text-slate-500">Daftar alumni</p>
+                        <p class="text-xs sm:text-sm font-medium text-white">Lihat Data</p>
+                        <p class="text-[10px] sm:text-xs text-slate-500 hidden sm:block">Daftar alumni</p>
                     </div>
                 </a>
-                <a href="/dashboard/papan" class="flex items-center gap-3 p-4 rounded-lg bg-slate-800/50 border border-slate-700/50 hover:border-yellow-500/30 hover:bg-slate-800 transition-all group">
-                    <div class="w-10 h-10 rounded-lg bg-yellow-600/20 flex items-center justify-center group-hover:bg-yellow-600/30 transition-colors">
-                        <svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/></svg>
+                <a href="/dashboard/papan" class="flex items-center gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg bg-slate-800/50 border border-slate-700/50 hover:border-yellow-500/30 hover:bg-slate-800 transition-all group">
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-yellow-600/20 flex items-center justify-center group-hover:bg-yellow-600/30 transition-colors">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/></svg>
                     </div>
                     <div>
-                        <p class="text-sm font-medium text-white">Kelola Pengumuman</p>
-                        <p class="text-xs text-slate-500">Info loker, beasiswa, reuni</p>
+                        <p class="text-xs sm:text-sm font-medium text-white">Kelola Pengumuman</p>
+                        <p class="text-[10px] sm:text-xs text-slate-500 hidden sm:block">Info loker, beasiswa, reuni</p>
                     </div>
                 </a>
-                <a href="/" target="_blank" class="flex items-center gap-3 p-4 rounded-lg bg-slate-800/50 border border-slate-700/50 hover:border-purple-500/30 hover:bg-slate-800 transition-all group">
-                    <div class="w-10 h-10 rounded-lg bg-purple-600/20 flex items-center justify-center group-hover:bg-purple-600/30 transition-colors">
-                        <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                <a href="/" target="_blank" class="flex items-center gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg bg-slate-800/50 border border-slate-700/50 hover:border-purple-500/30 hover:bg-slate-800 transition-all group">
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-purple-600/20 flex items-center justify-center group-hover:bg-purple-600/30 transition-colors">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                     </div>
                     <div>
-                        <p class="text-sm font-medium text-white">Halaman Publik</p>
-                        <p class="text-xs text-slate-500">Lihat landing page</p>
+                        <p class="text-xs sm:text-sm font-medium text-white">Halaman Publik</p>
+                        <p class="text-[10px] sm:text-xs text-slate-500 hidden sm:block">Lihat landing page</p>
                     </div>
                 </a>
             </div>

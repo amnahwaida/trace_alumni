@@ -35,26 +35,53 @@
                 {{end}}
             </div>
 
-            <!-- Excel Tools Accordion / Flex for mobile -->
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <!-- Excel Tools (Desktop: Flex horizontal, Mobile: Dropdown) -->
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 flex items-center justify-between gap-3">
                 <span class="text-xs text-slate-400 font-medium">Alat Ekspor/Impor Data:</span>
-                <div class="grid grid-cols-1 sm:flex sm:flex-wrap items-center gap-2 w-full sm:w-auto">
-                    <a href="/dashboard/alumni/export" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-3 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs font-medium text-slate-300 transition-colors border border-slate-700/50">
+                
+                <!-- Desktop View (hidden on mobile) -->
+                <div class="hidden sm:flex items-center gap-2">
+                    <a href="/dashboard/alumni/export" class="inline-flex items-center justify-center gap-2 px-3 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs font-medium text-slate-300 transition-colors border border-slate-700/50">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                         Export Excel
                     </a>
 
                     {{if or (eq .User.Role "super_admin") (eq .User.Role "admin")}}
-                    <a href="/dashboard/alumni/template" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-3 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs font-medium text-slate-300 transition-colors border border-slate-700/50">
+                    <a href="/dashboard/alumni/template" class="inline-flex items-center justify-center gap-2 px-3 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs font-medium text-slate-300 transition-colors border border-slate-700/50">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                         Template Excel
                     </a>
 
-                    <label for="excelFileInput" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-3 py-2 bg-green-600 hover:bg-green-500 rounded-lg text-xs font-medium text-white transition-colors cursor-pointer">
+                    <label for="excelFileInput" class="inline-flex items-center justify-center gap-2 px-3 py-2 bg-green-600 hover:bg-green-500 rounded-lg text-xs font-medium text-white transition-colors cursor-pointer">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
                         Import Excel
                     </label>
                     {{end}}
+                </div>
+
+                <!-- Mobile Dropdown View (hidden on desktop) -->
+                <div class="relative sm:hidden" id="excelDropdownContainer">
+                    <button type="button" onclick="toggleExcelDropdown()" class="inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs font-medium text-slate-300 transition-colors border border-slate-700/50 focus:outline-none">
+                        <span>Alat Data</span>
+                        <svg class="w-3.5 h-3.5 transition-transform duration-200" id="excelChevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <!-- Dropdown Content -->
+                    <div id="excelDropdownContent" class="absolute right-0 mt-2 w-48 bg-slate-900 border border-slate-800 rounded-xl shadow-xl py-1.5 hidden z-20">
+                        <a href="/dashboard/alumni/export" class="flex items-center gap-2.5 px-4 py-2 hover:bg-slate-800 text-xs font-medium text-slate-300 transition-colors">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                            Export Excel
+                        </a>
+                        {{if or (eq .User.Role "super_admin") (eq .User.Role "admin")}}
+                        <a href="/dashboard/alumni/template" class="flex items-center gap-2.5 px-4 py-2 hover:bg-slate-800 text-xs font-medium text-slate-300 transition-colors">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            Template Excel
+                        </a>
+                        <label for="excelFileInput" class="flex items-center gap-2.5 px-4 py-2 hover:bg-slate-800 text-xs font-medium text-green-400 hover:text-green-300 transition-colors cursor-pointer">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                            Import Excel
+                        </label>
+                        {{end}}
+                    </div>
                 </div>
             </div>
         </div>
@@ -97,6 +124,36 @@
             <input type="file" name="excel_file" id="excelFileInput" accept=".xlsx" onchange="document.getElementById('importForm').submit()">
         </form>
         {{end}}
+
+        <script>
+            function toggleExcelDropdown() {
+                const dropdown = document.getElementById('excelDropdownContent');
+                const chevron = document.getElementById('excelChevron');
+                const isHidden = dropdown.classList.contains('hidden');
+                
+                if (isHidden) {
+                    dropdown.classList.remove('hidden');
+                    chevron.classList.add('rotate-180');
+                } else {
+                    dropdown.classList.add('hidden');
+                    chevron.classList.remove('rotate-180');
+                }
+            }
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                const container = document.getElementById('excelDropdownContainer');
+                const dropdown = document.getElementById('excelDropdownContent');
+                const chevron = document.getElementById('excelChevron');
+                
+                if (container && !container.contains(event.target)) {
+                    if (dropdown && !dropdown.classList.contains('hidden')) {
+                        dropdown.classList.add('hidden');
+                        chevron.classList.remove('rotate-180');
+                    }
+                }
+            });
+        </script>
     </main>
 </body>
 </html>
