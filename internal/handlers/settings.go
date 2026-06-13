@@ -203,8 +203,8 @@ func processUploadedLogo(r *http.Request, fieldName string) (string, error) {
 		return "", fmt.Errorf("gagal memproses file logo: %w", err)
 	}
 
-	// Fit to standard header sizes (maximum width: 400px, height: 120px) to keep size minimal
-	resizedImg := imaging.Fit(img, 400, 120, imaging.Lanczos)
+	// Fit to square logo (400x400px)
+	resizedImg := imaging.Fit(img, 400, 400, imaging.Lanczos)
 
 	dataDir := os.Getenv("DATA_DIR")
 	if dataDir == "" {
