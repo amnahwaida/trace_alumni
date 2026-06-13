@@ -168,18 +168,41 @@
                 <!-- Section 2: Data Usulan Baru -->
                 <div class="space-y-4">
                     <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider pt-2 border-t border-slate-800/60">Data Usulan Baru</h4>
+                    
+                    <!-- Old Data Info (Hidden by default / Masked) -->
+                    <div class="bg-slate-950/40 border border-slate-800 rounded-xl p-3 space-y-2" id="oldDataSection">
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="text-slate-400 font-medium">No. HP Saat Ini:</span>
+                            <div class="flex items-center gap-2">
+                                <span id="labelOldPhone" class="font-mono text-slate-300"></span>
+                                <button type="button" id="btnToggleOldPhone" onclick="toggleShowOldPhone()" class="text-blue-400 hover:text-blue-300 text-[10px] font-semibold transition-colors focus:outline-none bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">
+                                    Show
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="text-slate-400 font-medium">Email Saat Ini:</span>
+                            <div class="flex items-center gap-2">
+                                <span id="labelOldEmail" class="text-slate-300"></span>
+                                <button type="button" id="btnToggleOldEmail" onclick="toggleShowOldEmail()" class="text-blue-400 hover:text-blue-300 text-[10px] font-semibold transition-colors focus:outline-none bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">
+                                    Show
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs text-slate-300 mb-1.5 font-semibold">Nomor HP Baru</label>
                             <input type="tel" name="update_no_hp" id="claimNoHP"
                                 class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm"
-                                placeholder="Contoh: 08123456789">
+                                placeholder="Biarkan kosong jika tidak diubah">
                         </div>
                         <div>
                             <label class="block text-xs text-slate-300 mb-1.5 font-semibold">Email Baru</label>
                             <input type="email" name="update_email" id="claimEmail"
                                 class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm"
-                                placeholder="Contoh: budi@mail.com">
+                                placeholder="Biarkan kosong jika tidak diubah">
                         </div>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -234,14 +257,42 @@
     </div>
 
     <script>
-        function openClaimModal(alumniId, name, graduationYear, phone, email, domicile, job, office, linkedin) {
+        let currentUnmaskedPhone = "";
+        let currentUnmaskedEmail = "";
+        let currentMaskedPhone = "";
+        let currentMaskedEmail = "";
+        let isPhoneUnmasked = false;
+        let isEmailUnmasked = false;
+
+        function openClaimModal(alumniId, name, graduationYear, phone, email, maskedPhone, maskedEmail, domicile, job, office, linkedin) {
             // Setup values
             document.getElementById('claimAlumniId').value = alumniId;
             document.getElementById('claimAlumniName').textContent = name + " (" + graduationYear + ")";
             
-            // Prefill usulan data
-            document.getElementById('claimNoHP').value = phone || "";
-            document.getElementById('claimEmail').value = email || "";
+            // Store phone/email states
+            currentUnmaskedPhone = phone || "";
+            currentUnmaskedEmail = email || "";
+            currentMaskedPhone = maskedPhone || "";
+            currentMaskedEmail = maskedEmail || "";
+            isPhoneUnmasked = false;
+            isEmailUnmasked = false;
+
+            // Reset labels and toggle buttons
+            document.getElementById('labelOldPhone').textContent = currentMaskedPhone || "—";
+            document.getElementById('labelOldEmail').textContent = currentMaskedEmail || "—";
+            document.getElementById('btnToggleOldPhone').textContent = "Show";
+            document.getElementById('btnToggleOldEmail').textContent = "Show";
+
+            // If there is no phone/email at all, hide the toggle section
+            if (!currentMaskedPhone && !currentMaskedEmail) {
+                document.getElementById('oldDataSection').classList.add('hidden');
+            } else {
+                document.getElementById('oldDataSection').classList.remove('hidden');
+            }
+
+            // Prefill usulan data (keep Phone and Email EMPTY to avoid exposing them, user fills only if they want to update)
+            document.getElementById('claimNoHP').value = "";
+            document.getElementById('claimEmail').value = "";
             document.getElementById('claimDomisili').value = domicile || "";
             document.getElementById('claimPekerjaan').value = job || "";
             document.getElementById('claimInstansi').value = office || "";
@@ -252,9 +303,9 @@
             form.reset();
             document.getElementById('claimAlumniId').value = alumniId; // restore
             
-            // Re-prefill since reset clears everything
-            document.getElementById('claimNoHP').value = phone || "";
-            document.getElementById('claimEmail').value = email || "";
+            // Keep Phone and Email EMPTY on input reset too
+            document.getElementById('claimNoHP').value = "";
+            document.getElementById('claimEmail').value = "";
             document.getElementById('claimDomisili').value = domicile || "";
             document.getElementById('claimPekerjaan').value = job || "";
             document.getElementById('claimInstansi').value = office || "";
@@ -274,6 +325,34 @@
             card.classList.add('scale-100', 'opacity-100');
             
             document.body.style.overflow = 'hidden';
+        }
+
+        function toggleShowOldPhone() {
+            const label = document.getElementById('labelOldPhone');
+            const btn = document.getElementById('btnToggleOldPhone');
+            if (isPhoneUnmasked) {
+                label.textContent = currentMaskedPhone || "—";
+                btn.textContent = "Show";
+                isPhoneUnmasked = false;
+            } else {
+                label.textContent = currentUnmaskedPhone || "—";
+                btn.textContent = "Hide";
+                isPhoneUnmasked = true;
+            }
+        }
+
+        function toggleShowOldEmail() {
+            const label = document.getElementById('labelOldEmail');
+            const btn = document.getElementById('btnToggleOldEmail');
+            if (isEmailUnmasked) {
+                label.textContent = currentMaskedEmail || "—";
+                btn.textContent = "Show";
+                isEmailUnmasked = false;
+            } else {
+                label.textContent = currentUnmaskedEmail || "—";
+                btn.textContent = "Hide";
+                isEmailUnmasked = true;
+            }
         }
 
         function closeClaimModal() {
