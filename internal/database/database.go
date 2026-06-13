@@ -151,6 +151,32 @@ func RunMigrations() error {
 		}
 	}
 
+	// Add status column to alumni table for pending/active verification
+	var hasStatus bool
+	rows, err = DB.Query("PRAGMA table_info(alumni)")
+	if err == nil {
+		for rows.Next() {
+			var cid int
+			var name, ctype string
+			var notnull, pk int
+			var dfltVal interface{}
+			if err := rows.Scan(&cid, &name, &ctype, &notnull, &dfltVal, &pk); err == nil {
+				if name == "status" {
+					hasStatus = true
+				}
+			}
+		}
+		rows.Close()
+	}
+	if !hasStatus {
+		if _, err := DB.Exec("ALTER TABLE alumni ADD COLUMN status TEXT DEFAULT 'active'"); err != nil {
+			log.Printf("Failed to add status column: %v", err)
+		}
+		// Ensure all existing records are marked as active
+		DB.Exec("UPDATE alumni SET status = 'active' WHERE status IS NULL")
+		log.Println("✅ Added 'status' column to alumni table")
+	}
+
 	log.Println("✅ Database migrations completed")
 	return nil
 }

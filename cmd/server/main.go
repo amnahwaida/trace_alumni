@@ -68,6 +68,8 @@ func main() {
 	r.Get("/", handlers.LandingPage)
 	r.Get("/search", handlers.PublicSearch)
 	r.Get("/info", handlers.PublicPapan)
+	r.Get("/tambah-data", handlers.PublicTambahData)
+	r.Post("/api/alumni/submit", handlers.PublicTambahDataSubmit)
 	r.Get("/login", handlers.LoginPage)
 	r.Post("/login", handlers.LoginPost)
 	r.Get("/logout", handlers.Logout)
@@ -92,6 +94,11 @@ func main() {
 		r.With(middleware.RequireRole("super_admin", "admin")).Post("/alumni/delete", handlers.AlumniDelete)
 		r.With(middleware.RequireRole("super_admin", "admin")).Get("/alumni/template", handlers.DownloadTemplate)
 		r.With(middleware.RequireRole("super_admin", "admin")).Post("/alumni/import", handlers.ImportAlumni)
+		
+		// Verification Tab
+		r.With(middleware.RequireRole("super_admin", "admin")).Get("/alumni/verify", handlers.AlumniVerifyList)
+		r.With(middleware.RequireRole("super_admin", "admin")).Post("/alumni/verify/approve", handlers.AlumniVerifyApprove)
+		r.With(middleware.RequireRole("super_admin", "admin")).Post("/alumni/verify/reject", handlers.AlumniVerifyReject)
 
 		// Papan Pengumuman CRUD
 		r.Get("/papan", handlers.PapanList)

@@ -23,6 +23,7 @@ type Alumni struct {
 	Instansi         *string `json:"instansi"`
 	URLLinkedIn      *string `json:"url_linkedin"`
 	FotoProfil       *string `json:"foto_profil"`
+	Status           string  `json:"status"`
 	CreatedAt        string  `json:"created_at"`
 	UpdatedAt        string  `json:"updated_at"`
 }

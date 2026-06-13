@@ -44,28 +44,28 @@ func AlumniList(w http.ResponseWriter, r *http.Request) {
 		pat := "%" + search + "%"
 		database.DB.QueryRow(`
 			SELECT COUNT(*) FROM alumni 
-			WHERE nama_lengkap LIKE ? 
+			WHERE status = 'active' AND (nama_lengkap LIKE ? 
 			   OR CAST(tahun_lulus AS TEXT) LIKE ? 
 			   OR domisili_sekarang LIKE ? 
 			   OR pekerjaan LIKE ? 
-			   OR no_hp LIKE ?`,
+			   OR no_hp LIKE ?)`,
 			pat, pat, pat, pat, pat).Scan(&totalCount)
 		rows, err = database.DB.Query(`
 			SELECT id,nama_lengkap,alamat_asli,domisili_sekarang,no_hp,email,
 			tahun_lulus,tanggal_lahir,pekerjaan,instansi,url_linkedin,foto_profil,
 			created_at,updated_at FROM alumni
-			WHERE nama_lengkap LIKE ? 
+			WHERE status = 'active' AND (nama_lengkap LIKE ? 
 			   OR CAST(tahun_lulus AS TEXT) LIKE ? 
 			   OR domisili_sekarang LIKE ? 
 			   OR pekerjaan LIKE ? 
-			   OR no_hp LIKE ?
+			   OR no_hp LIKE ?)
 			ORDER BY id DESC LIMIT ? OFFSET ?`, pat, pat, pat, pat, pat, alumniPerPage, offset)
 	} else {
-		database.DB.QueryRow("SELECT COUNT(*) FROM alumni").Scan(&totalCount)
+		database.DB.QueryRow("SELECT COUNT(*) FROM alumni WHERE status = 'active'").Scan(&totalCount)
 		rows, err = database.DB.Query(`
 			SELECT id,nama_lengkap,alamat_asli,domisili_sekarang,no_hp,email,
 			tahun_lulus,tanggal_lahir,pekerjaan,instansi,url_linkedin,foto_profil,
-			created_at,updated_at FROM alumni ORDER BY id DESC LIMIT ? OFFSET ?`,
+			created_at,updated_at FROM alumni WHERE status = 'active' ORDER BY id DESC LIMIT ? OFFSET ?`,
 			alumniPerPage, offset)
 	}
 	if err != nil {
@@ -114,7 +114,7 @@ func AlumniCreate(w http.ResponseWriter, r *http.Request) {
 	renderTemplate(w, "alumni_form.html", data)
 }
 
-func processPhoto(r *http.Request, fieldName string) (string, error) {
+func ProcessPhoto(r *http.Request, fieldName string) (string, error) {
 	file, header, err := r.FormFile(fieldName)
 	if err != nil {
 		if err == http.ErrMissingFile {
@@ -181,7 +181,7 @@ func AlumniStore(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fotoFileName, err := processPhoto(r, "foto_profil")
+	fotoFileName, err := ProcessPhoto(r, "foto_profil")
 	if err != nil {
 		http.Redirect(w, r, fmt.Sprintf("/dashboard/alumni/create?error=%s", url.QueryEscape(err.Error())), 303)
 		return
@@ -259,7 +259,7 @@ func AlumniUpdate(w http.ResponseWriter, r *http.Request) {
 	var existingFoto *string
 	database.DB.QueryRow("SELECT foto_profil FROM alumni WHERE id = ?", id).Scan(&existingFoto)
 
-	newFotoFileName, err := processPhoto(r, "foto_profil")
+	newFotoFileName, err := ProcessPhoto(r, "foto_profil")
 	if err != nil {
 		http.Redirect(w, r, fmt.Sprintf("/dashboard/alumni/edit?id=%d&error=%s", id, url.QueryEscape(err.Error())), 303)
 		return
@@ -340,3 +340,93 @@ func ns(s string) *string {
 	}
 	return &s
 }
+
+func AlumniVerifyList(w http.ResponseWriter, r *http.Request) {
+	user := middleware.GetUser(r)
+	
+	rows, err := database.DB.Query(`
+		SELECT id,nama_lengkap,alamat_asli,domisili_sekarang,no_hp,email,
+		tahun_lulus,tanggal_lahir,pekerjaan,instansi,url_linkedin,foto_profil,
+		created_at,updated_at FROM alumni WHERE status = 'pending' ORDER BY id DESC`)
+	if err != nil {
+		log.Printf("Query verify error: %v", err)
+		http.Error(w, "Database error", 500)
+		return
+	}
+	defer rows.Close()
+
+	var list []models.Alumni
+	for rows.Next() {
+		var a models.Alumni
+		if err := rows.Scan(&a.ID, &a.NamaLengkap, &a.AlamatAsli, &a.DomisiliSekarang,
+			&a.NoHP, &a.Email, &a.TahunLulus, &a.TanggalLahir,
+			&a.Pekerjaan, &a.Instansi, &a.URLLinkedIn, &a.FotoProfil,
+			&a.CreatedAt, &a.UpdatedAt); err != nil {
+			log.Printf("Scan verify error: %v", err)
+			continue
+		}
+		list = append(list, a)
+	}
+
+	data := map[string]interface{}{
+		"User": user, "Alumni": list,
+		"PageTitle": "Verifikasi Alumni Baru", "ActiveMenu": "verify_alumni",
+		"Success": r.URL.Query().Get("success"),
+		"Error":   r.URL.Query().Get("error"),
+	}
+	renderTemplate(w, "alumni_verify.html", data)
+}
+
+func AlumniVerifyApprove(w http.ResponseWriter, r *http.Request) {
+	id, _ := strconv.Atoi(r.URL.Query().Get("id"))
+	if id == 0 {
+		id, _ = strconv.Atoi(r.FormValue("id"))
+	}
+	
+	_, err := database.DB.Exec("UPDATE alumni SET status = 'active', updated_at = CURRENT_TIMESTAMP WHERE id = ?", id)
+	if err != nil {
+		log.Printf("Approve error: %v", err)
+		http.Redirect(w, r, "/dashboard/alumni/verify?error=Gagal+menyetujui+data", 303)
+		return
+	}
+
+	if r.Header.Get("HX-Request") == "true" {
+		w.Header().Set("HX-Redirect", "/dashboard/alumni/verify?success=Data+berhasil+disetujui")
+		w.WriteHeader(200)
+		return
+	}
+	http.Redirect(w, r, "/dashboard/alumni/verify?success=Data+berhasil+disetujui", 303)
+}
+
+func AlumniVerifyReject(w http.ResponseWriter, r *http.Request) {
+	id, _ := strconv.Atoi(r.URL.Query().Get("id"))
+	if id == 0 {
+		id, _ = strconv.Atoi(r.FormValue("id"))
+	}
+
+	var existingFoto *string
+	database.DB.QueryRow("SELECT foto_profil FROM alumni WHERE id = ?", id).Scan(&existingFoto)
+
+	_, err := database.DB.Exec("DELETE FROM alumni WHERE id = ?", id)
+	if err != nil {
+		log.Printf("Reject error: %v", err)
+		http.Redirect(w, r, "/dashboard/alumni/verify?error=Gagal+menolak+data", 303)
+		return
+	}
+
+	if existingFoto != nil && *existingFoto != "" {
+		dataDir := os.Getenv("DATA_DIR")
+		if dataDir == "" {
+			dataDir = "./data"
+		}
+		os.Remove(filepath.Join(dataDir, "uploads", *existingFoto))
+	}
+
+	if r.Header.Get("HX-Request") == "true" {
+		w.Header().Set("HX-Redirect", "/dashboard/alumni/verify?success=Data+berhasil+ditolak")
+		w.WriteHeader(200)
+		return
+	}
+	http.Redirect(w, r, "/dashboard/alumni/verify?success=Data+berhasil+ditolak", 303)
+}
+
