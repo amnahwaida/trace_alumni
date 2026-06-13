@@ -263,8 +263,7 @@
                 </div>
             </div>
 
-            <div class="flex items-center justify-between">
-                <span class="text-[10px] text-slate-500">ID: #{{.ID}}</span>
+            <div class="flex items-center justify-end">
                 {{if or (eq $.User.Role "super_admin") (eq $.User.Role "admin")}}
                 <div class="flex items-center gap-2">
                     <a href="/dashboard/alumni/edit?id={{.ID}}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-blue-400 transition-colors text-xs font-medium">
