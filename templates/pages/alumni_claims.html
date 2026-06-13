@@ -114,43 +114,15 @@
                     <!-- No HP -->
                     <div class="grid grid-cols-3 text-xs p-3 border-t border-white/5 {{if .UpdateNoHP}}{{if deref .UpdateNoHP}}diff-new{{else}}diff-old{{end}}{{else}}diff-old{{end}}">
                         <span class="font-semibold text-slate-400">No. HP</span>
-                        <div class="flex items-center gap-1.5">
-                            <span class="text-slate-300 font-mono admin-sensitive" data-masked="{{.MaskedOrigNoHP}}" data-full="{{if .OrigNoHP}}{{deref .OrigNoHP}}{{else}}-{{end}}">{{.MaskedOrigNoHP}}</span>
-                            {{if .OrigNoHP}}{{if deref .OrigNoHP}}
-                            <button type="button" onclick="toggleAdminSensitive(this)" class="text-slate-500 hover:text-white transition-colors focus:outline-none flex-shrink-0" title="Tampilkan/Sembunyikan">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                            </button>
-                            {{end}}{{end}}
-                        </div>
-                        <div class="flex items-center gap-1.5">
-                            <span class="text-emerald-400 font-mono font-semibold admin-sensitive" data-masked="{{.MaskedUpdateNoHP}}" data-full="{{if .UpdateNoHP}}{{if deref .UpdateNoHP}}{{deref .UpdateNoHP}}{{else}}-{{end}}{{else}}-{{end}}">{{.MaskedUpdateNoHP}}</span>
-                            {{if .UpdateNoHP}}{{if deref .UpdateNoHP}}
-                            <button type="button" onclick="toggleAdminSensitive(this)" class="text-emerald-500/50 hover:text-emerald-300 transition-colors focus:outline-none flex-shrink-0" title="Tampilkan/Sembunyikan">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                            </button>
-                            {{end}}{{end}}
-                        </div>
+                        <span class="text-slate-300 font-mono">{{if .OrigNoHP}}{{deref .OrigNoHP}}{{else}}<span class="text-slate-600">—</span>{{end}}</span>
+                        <span class="text-emerald-400 font-mono font-semibold">{{if .UpdateNoHP}}{{if deref .UpdateNoHP}}{{deref .UpdateNoHP}}{{else}}<span class="text-slate-600">—</span>{{end}}{{else}}<span class="text-slate-600">—</span>{{end}}</span>
                     </div>
 
                     <!-- Email -->
                     <div class="grid grid-cols-3 text-xs p-3 border-t border-white/5 {{if .UpdateEmail}}{{if deref .UpdateEmail}}diff-new{{else}}diff-old{{end}}{{else}}diff-old{{end}}">
                         <span class="font-semibold text-slate-400">Email</span>
-                        <div class="flex items-center gap-1.5 min-w-0">
-                            <span class="text-slate-300 truncate admin-sensitive" data-masked="{{.MaskedOrigEmail}}" data-full="{{if .OrigEmail}}{{deref .OrigEmail}}{{else}}-{{end}}">{{.MaskedOrigEmail}}</span>
-                            {{if .OrigEmail}}{{if deref .OrigEmail}}
-                            <button type="button" onclick="toggleAdminSensitive(this)" class="text-slate-500 hover:text-white transition-colors focus:outline-none flex-shrink-0" title="Tampilkan/Sembunyikan">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                            </button>
-                            {{end}}{{end}}
-                        </div>
-                        <div class="flex items-center gap-1.5 min-w-0">
-                            <span class="text-emerald-400 truncate font-semibold admin-sensitive" data-masked="{{.MaskedUpdateEmail}}" data-full="{{if .UpdateEmail}}{{if deref .UpdateEmail}}{{deref .UpdateEmail}}{{else}}-{{end}}{{else}}-{{end}}">{{.MaskedUpdateEmail}}</span>
-                            {{if .UpdateEmail}}{{if deref .UpdateEmail}}
-                            <button type="button" onclick="toggleAdminSensitive(this)" class="text-emerald-500/50 hover:text-emerald-300 transition-colors focus:outline-none flex-shrink-0" title="Tampilkan/Sembunyikan">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                            </button>
-                            {{end}}{{end}}
-                        </div>
+                        <span class="text-slate-300 truncate">{{if .OrigEmail}}{{deref .OrigEmail}}{{else}}<span class="text-slate-600">—</span>{{end}}</span>
+                        <span class="text-emerald-400 truncate font-semibold">{{if .UpdateEmail}}{{if deref .UpdateEmail}}{{deref .UpdateEmail}}{{else}}<span class="text-slate-600">—</span>{{end}}{{else}}<span class="text-slate-600">—</span>{{end}}</span>
                     </div>
 
                     <!-- Domisili -->
