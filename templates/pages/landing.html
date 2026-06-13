@@ -173,21 +173,11 @@
                     <div class="bg-slate-950/40 border border-slate-800 rounded-xl p-3 space-y-2" id="oldDataSection">
                         <div class="flex items-center justify-between text-xs">
                             <span class="text-slate-400 font-medium">No. HP Saat Ini:</span>
-                            <div class="flex items-center gap-2">
-                                <span id="labelOldPhone" class="font-mono text-slate-300"></span>
-                                <button type="button" id="btnToggleOldPhone" onclick="toggleShowOldPhone()" class="text-blue-400 hover:text-blue-300 text-[10px] font-semibold transition-colors focus:outline-none bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">
-                                    Show
-                                </button>
-                            </div>
+                            <span id="labelOldPhone" class="font-mono text-slate-300"></span>
                         </div>
                         <div class="flex items-center justify-between text-xs">
                             <span class="text-slate-400 font-medium">Email Saat Ini:</span>
-                            <div class="flex items-center gap-2">
-                                <span id="labelOldEmail" class="text-slate-300"></span>
-                                <button type="button" id="btnToggleOldEmail" onclick="toggleShowOldEmail()" class="text-blue-400 hover:text-blue-300 text-[10px] font-semibold transition-colors focus:outline-none bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">
-                                    Show
-                                </button>
-                            </div>
+                            <span id="labelOldEmail" class="text-slate-300"></span>
                         </div>
                     </div>
 
@@ -257,34 +247,17 @@
     </div>
 
     <script>
-        let currentUnmaskedPhone = "";
-        let currentUnmaskedEmail = "";
-        let currentMaskedPhone = "";
-        let currentMaskedEmail = "";
-        let isPhoneUnmasked = false;
-        let isEmailUnmasked = false;
-
-        function openClaimModal(alumniId, name, graduationYear, phone, email, maskedPhone, maskedEmail, domicile, job, office, linkedin) {
+        function openClaimModal(alumniId, name, graduationYear, maskedPhone, maskedEmail, domicile, job, office, linkedin) {
             // Setup values
             document.getElementById('claimAlumniId').value = alumniId;
             document.getElementById('claimAlumniName').textContent = name + " (" + graduationYear + ")";
             
-            // Store phone/email states
-            currentUnmaskedPhone = phone || "";
-            currentUnmaskedEmail = email || "";
-            currentMaskedPhone = maskedPhone || "";
-            currentMaskedEmail = maskedEmail || "";
-            isPhoneUnmasked = false;
-            isEmailUnmasked = false;
+            // Set labels
+            document.getElementById('labelOldPhone').textContent = maskedPhone || "—";
+            document.getElementById('labelOldEmail').textContent = maskedEmail || "—";
 
-            // Reset labels and toggle buttons
-            document.getElementById('labelOldPhone').textContent = currentMaskedPhone || "—";
-            document.getElementById('labelOldEmail').textContent = currentMaskedEmail || "—";
-            document.getElementById('btnToggleOldPhone').textContent = "Show";
-            document.getElementById('btnToggleOldEmail').textContent = "Show";
-
-            // If there is no phone/email at all, hide the toggle section
-            if (!currentMaskedPhone && !currentMaskedEmail) {
+            // If there is no phone/email at all, hide the section
+            if (!maskedPhone && !maskedEmail) {
                 document.getElementById('oldDataSection').classList.add('hidden');
             } else {
                 document.getElementById('oldDataSection').classList.remove('hidden');
@@ -325,34 +298,6 @@
             card.classList.add('scale-100', 'opacity-100');
             
             document.body.style.overflow = 'hidden';
-        }
-
-        function toggleShowOldPhone() {
-            const label = document.getElementById('labelOldPhone');
-            const btn = document.getElementById('btnToggleOldPhone');
-            if (isPhoneUnmasked) {
-                label.textContent = currentMaskedPhone || "—";
-                btn.textContent = "Show";
-                isPhoneUnmasked = false;
-            } else {
-                label.textContent = currentUnmaskedPhone || "—";
-                btn.textContent = "Hide";
-                isPhoneUnmasked = true;
-            }
-        }
-
-        function toggleShowOldEmail() {
-            const label = document.getElementById('labelOldEmail');
-            const btn = document.getElementById('btnToggleOldEmail');
-            if (isEmailUnmasked) {
-                label.textContent = currentMaskedEmail || "—";
-                btn.textContent = "Show";
-                isEmailUnmasked = false;
-            } else {
-                label.textContent = currentUnmaskedEmail || "—";
-                btn.textContent = "Hide";
-                isEmailUnmasked = true;
-            }
         }
 
         function closeClaimModal() {

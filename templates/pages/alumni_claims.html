@@ -87,7 +87,11 @@
                     <div class="flex flex-col items-start sm:items-end gap-1.5">
                         <div class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold rounded-lg">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
-                            WA Verifikasi: {{.NoWAVerifikasi}}
+                            <span>WA Verifikasi: </span>
+                            <span class="font-mono admin-sensitive" data-masked="{{.MaskedNoWAVerifikasi}}" data-full="{{.NoWAVerifikasi}}">{{.MaskedNoWAVerifikasi}}</span>
+                            <button type="button" onclick="toggleAdminSensitive(this)" class="text-emerald-300 hover:text-white transition-colors p-0.5 focus:outline-none" title="Tampilkan/Sembunyikan">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                            </button>
                         </div>
                         <span class="text-[10px] text-slate-500">Diajukan: {{.DibuatPada}}</span>
                     </div>
@@ -110,15 +114,43 @@
                     <!-- No HP -->
                     <div class="grid grid-cols-3 text-xs p-3 border-t border-white/5 {{if .UpdateNoHP}}{{if deref .UpdateNoHP}}diff-new{{else}}diff-old{{end}}{{else}}diff-old{{end}}">
                         <span class="font-semibold text-slate-400">No. HP</span>
-                        <span class="text-slate-300 font-mono">{{if .OrigNoHP}}{{deref .OrigNoHP}}{{else}}<span class="text-slate-600">—</span>{{end}}</span>
-                        <span class="text-emerald-400 font-mono font-semibold">{{if .UpdateNoHP}}{{if deref .UpdateNoHP}}{{deref .UpdateNoHP}}{{else}}<span class="text-slate-600">—</span>{{end}}{{else}}<span class="text-slate-600">—</span>{{end}}</span>
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-slate-300 font-mono admin-sensitive" data-masked="{{.MaskedOrigNoHP}}" data-full="{{if .OrigNoHP}}{{deref .OrigNoHP}}{{else}}-{{end}}">{{.MaskedOrigNoHP}}</span>
+                            {{if .OrigNoHP}}{{if deref .OrigNoHP}}
+                            <button type="button" onclick="toggleAdminSensitive(this)" class="text-slate-500 hover:text-white transition-colors focus:outline-none flex-shrink-0" title="Tampilkan/Sembunyikan">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                            </button>
+                            {{end}}{{end}}
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-emerald-400 font-mono font-semibold admin-sensitive" data-masked="{{.MaskedUpdateNoHP}}" data-full="{{if .UpdateNoHP}}{{if deref .UpdateNoHP}}{{deref .UpdateNoHP}}{{else}}-{{end}}{{else}}-{{end}}">{{.MaskedUpdateNoHP}}</span>
+                            {{if .UpdateNoHP}}{{if deref .UpdateNoHP}}
+                            <button type="button" onclick="toggleAdminSensitive(this)" class="text-emerald-500/50 hover:text-emerald-300 transition-colors focus:outline-none flex-shrink-0" title="Tampilkan/Sembunyikan">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                            </button>
+                            {{end}}{{end}}
+                        </div>
                     </div>
 
                     <!-- Email -->
                     <div class="grid grid-cols-3 text-xs p-3 border-t border-white/5 {{if .UpdateEmail}}{{if deref .UpdateEmail}}diff-new{{else}}diff-old{{end}}{{else}}diff-old{{end}}">
                         <span class="font-semibold text-slate-400">Email</span>
-                        <span class="text-slate-300 truncate">{{if .OrigEmail}}{{deref .OrigEmail}}{{else}}<span class="text-slate-600">—</span>{{end}}</span>
-                        <span class="text-emerald-400 truncate font-semibold">{{if .UpdateEmail}}{{if deref .UpdateEmail}}{{deref .UpdateEmail}}{{else}}<span class="text-slate-600">—</span>{{end}}{{else}}<span class="text-slate-600">—</span>{{end}}</span>
+                        <div class="flex items-center gap-1.5 min-w-0">
+                            <span class="text-slate-300 truncate admin-sensitive" data-masked="{{.MaskedOrigEmail}}" data-full="{{if .OrigEmail}}{{deref .OrigEmail}}{{else}}-{{end}}">{{.MaskedOrigEmail}}</span>
+                            {{if .OrigEmail}}{{if deref .OrigEmail}}
+                            <button type="button" onclick="toggleAdminSensitive(this)" class="text-slate-500 hover:text-white transition-colors focus:outline-none flex-shrink-0" title="Tampilkan/Sembunyikan">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                            </button>
+                            {{end}}{{end}}
+                        </div>
+                        <div class="flex items-center gap-1.5 min-w-0">
+                            <span class="text-emerald-400 truncate font-semibold admin-sensitive" data-masked="{{.MaskedUpdateEmail}}" data-full="{{if .UpdateEmail}}{{if deref .UpdateEmail}}{{deref .UpdateEmail}}{{else}}-{{end}}{{else}}-{{end}}">{{.MaskedUpdateEmail}}</span>
+                            {{if .UpdateEmail}}{{if deref .UpdateEmail}}
+                            <button type="button" onclick="toggleAdminSensitive(this)" class="text-emerald-500/50 hover:text-emerald-300 transition-colors focus:outline-none flex-shrink-0" title="Tampilkan/Sembunyikan">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                            </button>
+                            {{end}}{{end}}
+                        </div>
                     </div>
 
                     <!-- Domisili -->
@@ -165,7 +197,7 @@
 
                 <!-- SOP Reminder -->
                 <div class="mb-5 p-3 bg-blue-500/5 border border-blue-500/15 rounded-xl text-[11px] text-blue-300/80 leading-relaxed">
-                    <span class="font-bold text-blue-400">📋 SOP Verifikasi:</span> Kirim pesan WhatsApp ke <strong>{{.NoWAVerifikasi}}</strong>: <em>"Halo {{.AlumniNamaLengkap}}, ini Admin Website Alumni. Kami menerima permintaan update data Anda. Mohon konfirmasi dengan membalas 'Benar'."</em> Klik "Setujui" hanya setelah mendapat balasan konfirmasi.
+                    <span class="font-bold text-blue-400">📋 SOP Verifikasi:</span> Klik ikon mata 👁 pada nomor WA di atas untuk melihat nomor lengkap, lalu kirim pesan WhatsApp: <em>"Halo {{.AlumniNamaLengkap}}, ini Admin Website Alumni. Kami menerima permintaan update data Anda. Mohon konfirmasi dengan membalas 'Benar'."</em> Klik "Setujui" hanya setelah mendapat balasan konfirmasi.
                 </div>
 
                 <!-- Action Buttons -->
@@ -196,6 +228,26 @@
         </div>
         {{end}}
     </main>
+
+    <script>
+        function toggleAdminSensitive(btn) {
+            const parent = btn.parentElement;
+            const target = parent.querySelector('.admin-sensitive');
+            if (!target) return;
+
+            const masked = target.getAttribute('data-masked');
+            const full = target.getAttribute('data-full');
+            const isMasked = (target.textContent === masked);
+
+            if (isMasked) {
+                target.textContent = full;
+                btn.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878l4.242 4.242M21 21l-3.168-3.168"/></svg>';
+            } else {
+                target.textContent = masked;
+                btn.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>';
+            }
+        }
+    </script>
 </body>
 </html>
 {{end}}

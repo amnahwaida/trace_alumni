@@ -1,6 +1,9 @@
 package models
 
-import "time"
+import (
+	"strings"
+	"time"
+)
 
 type User struct {
 	ID           int       `json:"id"`
@@ -123,4 +126,62 @@ type KlaimProfil struct {
 	OrigInstansi       *string `json:"orig_instansi,omitempty"`
 	OrigLinkedIn       *string `json:"orig_linkedin,omitempty"`
 	OrigFotoProfil     *string `json:"orig_foto_profil,omitempty"`
+}
+
+// MaskedNoWAVerifikasi returns masked WhatsApp number
+func (k *KlaimProfil) MaskedNoWAVerifikasi() string {
+	if len(k.NoWAVerifikasi) < 8 {
+		return "****"
+	}
+	return k.NoWAVerifikasi[:4] + "-xxxx-" + k.NoWAVerifikasi[len(k.NoWAVerifikasi)-4:]
+}
+
+// MaskedOrigNoHP returns masked original phone number
+func (k *KlaimProfil) MaskedOrigNoHP() string {
+	if k.OrigNoHP == nil || *k.OrigNoHP == "" {
+		return "-"
+	}
+	hp := *k.OrigNoHP
+	if len(hp) < 8 {
+		return "****"
+	}
+	return hp[:4] + "-xxxx-" + hp[len(hp)-4:]
+}
+
+// MaskedUpdateNoHP returns masked update phone number
+func (k *KlaimProfil) MaskedUpdateNoHP() string {
+	if k.UpdateNoHP == nil || *k.UpdateNoHP == "" {
+		return "-"
+	}
+	hp := *k.UpdateNoHP
+	if len(hp) < 8 {
+		return "****"
+	}
+	return hp[:4] + "-xxxx-" + hp[len(hp)-4:]
+}
+
+// MaskedOrigEmail returns masked original email
+func (k *KlaimProfil) MaskedOrigEmail() string {
+	if k.OrigEmail == nil || *k.OrigEmail == "" {
+		return "-"
+	}
+	email := *k.OrigEmail
+	atIdx := strings.Index(email, "@")
+	if atIdx <= 2 {
+		return "***" + email[atIdx:]
+	}
+	return email[:2] + "***" + email[atIdx:]
+}
+
+// MaskedUpdateEmail returns masked update email
+func (k *KlaimProfil) MaskedUpdateEmail() string {
+	if k.UpdateEmail == nil || *k.UpdateEmail == "" {
+		return "-"
+	}
+	email := *k.UpdateEmail
+	atIdx := strings.Index(email, "@")
+	if atIdx <= 2 {
+		return "***" + email[atIdx:]
+	}
+	return email[:2] + "***" + email[atIdx:]
 }
