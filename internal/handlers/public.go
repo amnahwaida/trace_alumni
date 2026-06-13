@@ -277,3 +277,49 @@ func PublicClaimSubmit(w http.ResponseWriter, r *http.Request) {
 		"message": "Permintaan berhasil dikirim! Admin akan memverifikasi melalui WhatsApp dalam 1x24 jam.",
 	})
 }
+
+// PwaManifest returns a dynamic manifest.json with custom PWA app name and PWA icon
+func PwaManifest(w http.ResponseWriter, r *http.Request) {
+	settings := getGlobalSettings()
+	appName := settings["pwa_app_name"]
+	if appName == "" {
+		appName = "Alumni Tracker"
+	}
+
+	icon192Path := settings["pwa_icon_path"]
+	if icon192Path == "" {
+		icon192Path = "/static/icon-192.png"
+	}
+	icon512Path := settings["pwa_icon_path"]
+	if icon512Path == "" {
+		icon512Path = "/static/icon-512.png"
+	}
+
+	manifest := map[string]interface{}{
+		"name":             appName,
+		"short_name":       appName,
+		"description":      "Sistem Informasi & Penelusuran Alumni",
+		"start_url":        "/",
+		"display":          "standalone",
+		"background_color": "#0f172a",
+		"theme_color":      "#0f172a",
+		"orientation":      "portrait-primary",
+		"icons": []map[string]string{
+			{
+				"src":     icon192Path,
+				"sizes":   "192x192",
+				"type":    "image/png",
+				"purpose": "any maskable",
+			},
+			{
+				"src":     icon512Path,
+				"sizes":   "512x512",
+				"type":    "image/png",
+				"purpose": "any maskable",
+			},
+		},
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(manifest)
+}

@@ -106,6 +106,8 @@ func RunMigrations() error {
 	_, _ = DB.Exec(`INSERT OR IGNORE INTO settings (key, value) VALUES ('papan_description', 'Temukan info lowongan kerja, beasiswa, agenda reuni, dan informasi penting lainnya.')`)
 	_, _ = DB.Exec(`INSERT OR IGNORE INTO settings (key, value) VALUES ('favicon_path', '')`)
 	_, _ = DB.Exec(`INSERT OR IGNORE INTO settings (key, value) VALUES ('logo_path', '')`)
+	_, _ = DB.Exec(`INSERT OR IGNORE INTO settings (key, value) VALUES ('pwa_app_name', 'Alumni Tracker')`)
+	_, _ = DB.Exec(`INSERT OR IGNORE INTO settings (key, value) VALUES ('pwa_icon_path', '')`)
 
 	var hasIsActive bool
 	rows, err := DB.Query("PRAGMA table_info(info_papan)")

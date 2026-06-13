@@ -147,6 +147,8 @@ func getGlobalSettings() map[string]string {
 		"project_credit": "© 2026 SMAS Muhammadiyah 1 Ngawi. Sistem Rekam Jejak Alumni.",
 		"favicon_path":   "",
 		"logo_path":      "",
+		"pwa_app_name":   "Alumni Tracker",
+		"pwa_icon_path":  "",
 	}
 
 	rows, err := database.DB.Query("SELECT key, value FROM settings")

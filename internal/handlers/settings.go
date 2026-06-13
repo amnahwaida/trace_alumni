@@ -43,9 +43,10 @@ func SettingsSave(w http.ResponseWriter, r *http.Request) {
 	schoolName := strings.TrimSpace(r.FormValue("school_name"))
 	projectCredit := strings.TrimSpace(r.FormValue("project_credit"))
 	papanDescription := strings.TrimSpace(r.FormValue("papan_description"))
+	pwaAppName := strings.TrimSpace(r.FormValue("pwa_app_name"))
 
-	if schoolName == "" || projectCredit == "" || papanDescription == "" {
-		http.Redirect(w, r, "/dashboard/settings?error=Nama+sekolah,+credit+dan+deskripsi+papan+tidak+boleh+kosong", 303)
+	if schoolName == "" || projectCredit == "" || papanDescription == "" || pwaAppName == "" {
+		http.Redirect(w, r, "/dashboard/settings?error=Nama+sekolah,+credit,+deskripsi+papan+dan+nama+PWA+tidak+boleh+kosong", 303)
 		return
 	}
 
@@ -53,6 +54,7 @@ func SettingsSave(w http.ResponseWriter, r *http.Request) {
 	_, _ = database.DB.Exec("UPDATE settings SET value = ? WHERE key = 'school_name'", schoolName)
 	_, _ = database.DB.Exec("UPDATE settings SET value = ? WHERE key = 'project_credit'", projectCredit)
 	_, _ = database.DB.Exec("UPDATE settings SET value = ? WHERE key = 'papan_description'", papanDescription)
+	_, _ = database.DB.Exec("UPDATE settings SET value = ? WHERE key = 'pwa_app_name'", pwaAppName)
 
 	// Process logo file
 	logoPath, err := processUploadedLogo(r, "logo")
@@ -98,6 +100,28 @@ func SettingsSave(w http.ResponseWriter, r *http.Request) {
 		_, _ = database.DB.Exec("UPDATE settings SET value = ? WHERE key = 'favicon_path'", faviconPath)
 	}
 
+	// Process PWA icon file
+	pwaIconPath, err := processUploadedPwaIcon(r, "pwa_icon")
+	if err != nil {
+		http.Redirect(w, r, "/dashboard/settings?error="+err.Error(), 303)
+		return
+	}
+	if pwaIconPath != "" {
+		// Remove old PWA icon file if it exists
+		var oldPwaIconPath string
+		_ = database.DB.QueryRow("SELECT value FROM settings WHERE key = 'pwa_icon_path'").Scan(&oldPwaIconPath)
+		if oldPwaIconPath != "" {
+			dataDir := os.Getenv("DATA_DIR")
+			if dataDir == "" {
+				dataDir = "./data"
+			}
+			filename := filepath.Base(oldPwaIconPath)
+			oldFile := filepath.Join(dataDir, "uploads", filename)
+			_ = os.Remove(oldFile)
+		}
+		_, _ = database.DB.Exec("UPDATE settings SET value = ? WHERE key = 'pwa_icon_path'", pwaIconPath)
+	}
+
 	http.Redirect(w, r, "/dashboard/settings?success=Pengaturan+berhasil+disimpan", 303)
 }
 
@@ -123,6 +147,11 @@ func SettingsReset(w http.ResponseWriter, r *http.Request) {
 		defaultValue = ""
 		isFile = true
 	case "favicon_path":
+		defaultValue = ""
+		isFile = true
+	case "pwa_app_name":
+		defaultValue = "Alumni Tracker"
+	case "pwa_icon_path":
 		defaultValue = ""
 		isFile = true
 	default:
@@ -243,6 +272,53 @@ func processUploadedFavicon(r *http.Request, fieldName string) (string, error) {
 	if err != nil {
 		os.Remove(filePath)
 		return "", fmt.Errorf("gagal encode favicon: %w", err)
+	}
+
+	return "/uploads/" + fileName, nil
+}
+
+func processUploadedPwaIcon(r *http.Request, fieldName string) (string, error) {
+	file, header, err := r.FormFile(fieldName)
+	if err != nil {
+		if err == http.ErrMissingFile {
+			return "", nil
+		}
+		return "", err
+	}
+	defer file.Close()
+
+	// Limit size to 3MB
+	if header.Size > 3*1024*1024 {
+		return "", fmt.Errorf("ukuran file icon PWA melebihi 3MB")
+	}
+
+	img, _, err := image.Decode(file)
+	if err != nil {
+		return "", fmt.Errorf("gagal memproses file icon PWA: %w", err)
+	}
+
+	// PWA icon size: 512x512 px
+	resizedImg := imaging.Fit(img, 512, 512, imaging.Lanczos)
+
+	dataDir := os.Getenv("DATA_DIR")
+	if dataDir == "" {
+		dataDir = "./data"
+	}
+	uploadsDir := filepath.Join(dataDir, "uploads")
+
+	fileName := "pwa_icon_" + uuid.New().String()[:8] + ".png"
+	filePath := filepath.Join(uploadsDir, fileName)
+
+	out, err := os.Create(filePath)
+	if err != nil {
+		return "", fmt.Errorf("gagal menyimpan icon PWA: %w", err)
+	}
+	defer out.Close()
+
+	err = png.Encode(out, resizedImg)
+	if err != nil {
+		os.Remove(filePath)
+		return "", fmt.Errorf("gagal encode icon PWA: %w", err)
 	}
 
 	return "/uploads/" + fileName, nil

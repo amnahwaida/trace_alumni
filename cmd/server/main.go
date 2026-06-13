@@ -59,10 +59,7 @@ func main() {
 		w.Header().Set("Content-Type", "application/javascript")
 		http.ServeFile(w, r, "static/sw.js")
 	})
-	r.Get("/manifest.json", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		http.ServeFile(w, r, "static/manifest.json")
-	})
+	r.Get("/manifest.json", handlers.PwaManifest)
 
 	// Public routes
 	r.Get("/", handlers.LandingPage)
