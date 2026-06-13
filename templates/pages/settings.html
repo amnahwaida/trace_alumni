@@ -8,8 +8,19 @@
     <link rel="icon" type="image/x-icon" href="{{if .Settings.favicon_path}}{{.Settings.favicon_path}}{{else}}/static/favicon.ico{{end}}">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Cropper.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
+        /* Customize cropper styles to match dark theme */
+        .cropper-line, .cropper-point {
+            background-color: #3b82f6;
+        }
+        .cropper-bg {
+            background-image: repeating-linear-gradient(45deg, #0f172a 25%, transparent 25%, transparent 75%, #0f172a 75%, #0f172a), 
+                              repeating-linear-gradient(45deg, #0f172a 25%, #1e293b 25%, #1e293b 75%, #0f172a 75%, #0f172a);
+        }
     </style>
 </head>
 <body class="bg-slate-950 text-white min-h-screen">
@@ -70,7 +81,7 @@
                             {{end}}
                         </div>
                         <div class="flex-1 min-w-0">
-                            <input type="file" id="logo" name="logo" accept="image/*" onchange="previewImage(this, 'logo-preview', 'logo-placeholder')"
+                            <input type="file" id="logo" name="logo" accept="image/*" onchange="handleFileSelect(this, 'logo-preview', 'logo-placeholder', 400/120, 400, 120)"
                                 class="hidden">
                             <label for="logo" class="inline-flex items-center justify-center px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg text-xs font-semibold border border-slate-700/50 cursor-pointer transition-all">
                                 Pilih File Logo
@@ -95,7 +106,7 @@
                             {{end}}
                         </div>
                         <div class="flex-1 min-w-0">
-                            <input type="file" id="favicon" name="favicon" accept="image/*" onchange="previewImage(this, 'favicon-preview', 'favicon-placeholder')"
+                            <input type="file" id="favicon" name="favicon" accept="image/*" onchange="handleFileSelect(this, 'favicon-preview', 'favicon-placeholder', 1, 48, 48)"
                                 class="hidden">
                             <label for="favicon" class="inline-flex items-center justify-center px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg text-xs font-semibold border border-slate-700/50 cursor-pointer transition-all">
                                 Pilih File Favicon
@@ -132,7 +143,7 @@
                                 {{end}}
                             </div>
                             <div class="flex-1 min-w-0">
-                                <input type="file" id="pwa_icon" name="pwa_icon" accept="image/*" onchange="previewImage(this, 'pwa-icon-preview', 'pwa-icon-placeholder')"
+                                <input type="file" id="pwa_icon" name="pwa_icon" accept="image/*" onchange="handleFileSelect(this, 'pwa-icon-preview', 'pwa-icon-placeholder', 1, 512, 512)"
                                     class="hidden">
                                 <label for="pwa_icon" class="inline-flex items-center justify-center px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg text-xs font-semibold border border-slate-700/50 cursor-pointer transition-all">
                                     Pilih File Icon PWA
@@ -252,22 +263,133 @@
         </div>
     </main>
 
+    <!-- Cropper Modal -->
+    <div id="cropperModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/85 backdrop-blur-sm p-4 animate-fade-in">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+            <div class="px-6 py-4 border-b border-slate-800 flex justify-between items-center">
+                <h3 class="font-bold text-white text-base">Crop & Sesuaikan Gambar</h3>
+                <button type="button" onclick="closeCropperModal()" class="text-slate-400 hover:text-white transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <div class="flex-1 p-6 overflow-hidden flex items-center justify-center bg-slate-950 min-h-[300px] relative">
+                <div class="w-full h-full flex items-center justify-center">
+                    <img id="cropperImage" class="max-w-full max-h-[50vh] block">
+                </div>
+            </div>
+            <div class="px-6 py-4 border-t border-slate-800 flex justify-between items-center gap-3">
+                <div class="flex gap-2">
+                    <button type="button" onclick="cropper.rotate(-90)" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-semibold border border-slate-700/50 transition-colors" title="Putar Kiri">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+                    </button>
+                    <button type="button" onclick="cropper.rotate(90)" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-semibold border border-slate-700/50 transition-colors" title="Putar Kanan">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 10H11a8 8 0 00-8 8v2m18-10l-6 6m6-6l-6-6"/></svg>
+                    </button>
+                </div>
+                <div class="flex gap-3">
+                    <button type="button" onclick="closeCropperModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg text-xs font-semibold border border-slate-700/50 transition-colors">
+                        Batal
+                    </button>
+                    <button type="button" onclick="applyCrop()" class="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-semibold transition-colors shadow-lg shadow-blue-600/15">
+                        Potong & Simpan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        function previewImage(input, previewId, placeholderId) {
-            const preview = document.getElementById(previewId);
-            const placeholder = document.getElementById(placeholderId);
-            
+        let cropper = null;
+        let currentInput = null;
+        let currentPreviewId = null;
+        let currentPlaceholderId = null;
+        let cropAspectRatio = 1;
+        let targetWidth = 512;
+        let targetHeight = 512;
+
+        function handleFileSelect(input, previewId, placeholderId, aspectRatio, width, height) {
             if (input.files && input.files[0]) {
+                currentInput = input;
+                currentPreviewId = previewId;
+                currentPlaceholderId = placeholderId;
+                cropAspectRatio = aspectRatio;
+                targetWidth = width;
+                targetHeight = height;
+
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    preview.src = e.target.result;
-                    preview.classList.remove('hidden');
-                    if (placeholder) {
-                        placeholder.classList.add('hidden');
+                    const modal = document.getElementById('cropperModal');
+                    const image = document.getElementById('cropperImage');
+                    image.src = e.target.result;
+                    
+                    // Show modal
+                    modal.classList.remove('hidden');
+                    modal.classList.add('flex');
+
+                    // Initialize cropper
+                    if (cropper) {
+                        cropper.destroy();
                     }
-                }
+                    cropper = new Cropper(image, {
+                        aspectRatio: cropAspectRatio,
+                        viewMode: 1,
+                        background: false,
+                        autoCropArea: 1,
+                        responsive: true,
+                        restore: false,
+                        checkCrossOrigin: false,
+                    });
+                };
                 reader.readAsDataURL(input.files[0]);
             }
+        }
+
+        function closeCropperModal() {
+            const modal = document.getElementById('cropperModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+            if (currentInput) {
+                currentInput.value = '';
+            }
+        }
+
+        function applyCrop() {
+            if (!cropper) return;
+
+            const canvas = cropper.getCroppedCanvas({
+                width: targetWidth,
+                height: targetHeight,
+                imageSmoothingEnabled: true,
+                imageSmoothingQuality: 'high',
+            });
+
+            canvas.toBlob(function(blob) {
+                if (!blob) return;
+
+                const file = new File([blob], 'cropped_image.png', { type: 'image/png' });
+
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                currentInput.files = dataTransfer.files;
+
+                const preview = document.getElementById(currentPreviewId);
+                const placeholder = document.getElementById(currentPlaceholderId);
+                preview.src = URL.createObjectURL(blob);
+                preview.classList.remove('hidden');
+                if (placeholder) {
+                    placeholder.classList.add('hidden');
+                }
+
+                const modal = document.getElementById('cropperModal');
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                cropper.destroy();
+                cropper = null;
+            }, 'image/png');
         }
     </script>
 </body>

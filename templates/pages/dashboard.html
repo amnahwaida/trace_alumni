@@ -11,7 +11,7 @@
     <!-- PWA settings -->
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#0f172a">
-    <link rel="apple-touch-icon" href="/static/icon-192.png">
+    <link rel="apple-touch-icon" href="{{if .Settings.pwa_icon_path}}{{.Settings.pwa_icon_path}}{{else}}/static/icon-192.png{{end}}">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/htmx.org@1.9.12"></script>
