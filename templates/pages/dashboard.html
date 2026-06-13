@@ -1,6 +1,6 @@
 {{define "dashboard.html"}}
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,7 +25,7 @@
         }
     </script>
 </head>
-<body class="bg-slate-950 text-white min-h-screen">
+<body class="bg-slate-950 text-white min-h-screen overflow-x-hidden">
     {{template "sidebar" .}}
     {{template "mobile_header" .}}
 
@@ -36,7 +36,7 @@
         </div>
 
         <!-- Stats Cards -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5 mb-8">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-5 mb-8">
             <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 sm:p-6 hover:border-blue-500/30 transition-colors">
                 <div class="flex items-center justify-between mb-2 sm:mb-4">
                     <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-blue-600/20 flex items-center justify-center">
@@ -103,7 +103,7 @@
             <h2 class="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Aksi Cepat</h2>
 
             <!-- Responsive Quick Actions Grid -->
-            <div class="grid grid-cols-3 sm:grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3">
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {{if or (eq .User.Role "super_admin") (eq .User.Role "admin")}}
                 <a href="/dashboard/alumni/create" class="flex flex-col sm:flex-row items-center sm:items-center gap-1.5 sm:gap-3 p-2.5 sm:p-4 rounded-xl sm:rounded-lg bg-slate-800/50 border border-slate-700/50 hover:border-blue-500/30 hover:bg-slate-800 transition-all active:scale-95 sm:active:scale-100 group">
                     <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-blue-600/20 flex items-center justify-center group-hover:bg-blue-600/30 transition-colors flex-shrink-0">
