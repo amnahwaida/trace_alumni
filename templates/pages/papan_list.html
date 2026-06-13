@@ -273,12 +273,12 @@
             <a href="?page={{sub .Page 1}}{{if .Search}}&search={{.Search}}{{end}}"
                hx-get="?page={{sub .Page 1}}{{if .Search}}&search={{.Search}}{{end}}"
                hx-target="#papan-table-container" hx-swap="outerHTML" hx-push-url="true"
-               class="flex items-center gap-1.5 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg text-xs font-semibold border border-slate-700/50 transition-all select-none w-1/2 sm:w-auto justify-center">
+               class="flex items-center gap-1.5 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg text-xs font-semibold border border-slate-800 select-none w-1/2 sm:w-auto justify-center">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                 <span>Prev</span>
             </a>
             {{else}}
-            <button disabled class="flex items-center gap-1.5 px-3 py-2 bg-slate-900/30 text-slate-600 rounded-lg text-xs font-semibold border border-slate-850 cursor-not-allowed select-none w-1/2 sm:w-auto justify-center">
+            <button disabled class="flex items-center gap-1.5 px-3 py-2 bg-slate-950 text-slate-600 rounded-lg text-xs font-semibold border border-slate-800 cursor-not-allowed select-none w-1/2 sm:w-auto justify-center">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                 <span>Prev</span>
             </button>
@@ -294,7 +294,7 @@
                 <a href="?page={{$p}}{{if $search}}&search={{$search}}{{end}}"
                    hx-get="?page={{$p}}{{if $search}}&search={{$search}}{{end}}"
                    hx-target="#papan-table-container" hx-swap="outerHTML" hx-push-url="true"
-                   class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg text-xs font-semibold border border-slate-700/50 transition-all select-none">{{$p}}</a>
+                   class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg text-xs font-semibold border border-slate-800 select-none">{{$p}}</a>
                 {{end}}
                 {{end}}
             </div>
@@ -303,12 +303,12 @@
             <a href="?page={{add .Page 1}}{{if .Search}}&search={{.Search}}{{end}}"
                hx-get="?page={{add .Page 1}}{{if .Search}}&search={{.Search}}{{end}}"
                hx-target="#papan-table-container" hx-swap="outerHTML" hx-push-url="true"
-               class="flex items-center gap-1.5 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg text-xs font-semibold border border-slate-700/50 transition-all select-none w-1/2 sm:w-auto justify-center">
+               class="flex items-center gap-1.5 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg text-xs font-semibold border border-slate-800 select-none w-1/2 sm:w-auto justify-center">
                 <span>Next</span>
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </a>
             {{else}}
-            <button disabled class="flex items-center gap-1.5 px-3 py-2 bg-slate-900/30 text-slate-600 rounded-lg text-xs font-semibold border border-slate-850 cursor-not-allowed select-none w-1/2 sm:w-auto justify-center">
+            <button disabled class="flex items-center gap-1.5 px-3 py-2 bg-slate-950 text-slate-600 rounded-lg text-xs font-semibold border border-slate-800 cursor-not-allowed select-none w-1/2 sm:w-auto justify-center">
                 <span>Next</span>
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </button>
