@@ -1,10 +1,9 @@
-const CACHE_NAME = 'alumni-tracker-v1';
+const CACHE_NAME = 'alumni-tracker-v2';
 const ASSETS_TO_CACHE = [
   '/',
   '/info',
   '/static/icon-192.png',
-  '/static/icon-512.png',
-  '/manifest.json'
+  '/static/icon-512.png'
 ];
 
 // Install event: cache initial shell assets
@@ -40,6 +39,13 @@ self.addEventListener('fetch', (event) => {
 
   // Bypass cache for non-GET requests
   if (event.request.method !== 'GET') {
+    return;
+  }
+
+  // Never cache manifest.json or API calls — always go to network
+  const url = new URL(event.request.url);
+  if (url.pathname === '/manifest.json' || url.pathname.startsWith('/api/')) {
+    event.respondWith(fetch(event.request));
     return;
   }
 
