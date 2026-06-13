@@ -102,7 +102,7 @@
 </script>
 
 <!-- Custom Premium Confirmation Modal -->
-<div id="customConfirmModal" class="fixed inset-0 z-[9999] hidden flex items-center justify-center p-4">
+<div id="customConfirmModal" class="fixed inset-0 z-[9999] hidden items-center justify-center p-4">
     <!-- Overlay -->
     <div class="absolute inset-0 bg-slate-950/60 backdrop-blur-md transition-opacity duration-300 opacity-0" id="confirmModalOverlay"></div>
     
@@ -178,6 +178,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Show container
         modal.classList.remove('hidden');
+        modal.classList.add('flex');
         
         // Trigger reflow for transition
         void modal.offsetWidth;
@@ -199,6 +200,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         setTimeout(() => {
             modal.classList.add('hidden');
+            modal.classList.remove('flex');
             onConfirmCallback = null;
         }, 300);
     }
