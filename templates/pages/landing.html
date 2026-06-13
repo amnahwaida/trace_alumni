@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{if .Settings.school_name}}{{.Settings.school_name}}{{else}}SMAS Muhammadiyah 1 Ngawi{{end}} - Alumni Tracker</title>
+    <title>{{if .Settings.school_name}}{{.Settings.school_name}}{{else}}SMAS Muhammadiyah 1 Ngawi{{end}} - {{if .Settings.pwa_app_name}}{{.Settings.pwa_app_name}}{{else}}Alumni Tracker{{end}}</title>
     <meta name="description" content="Sistem pencarian dan rekam jejak alumni {{if .Settings.school_name}}{{.Settings.school_name}}{{else}}SMAS Muhammadiyah 1 Ngawi{{end}}. Temukan teman alumni Anda.">
     <link rel="icon" type="image/x-icon" href="{{if .Settings.favicon_path}}{{.Settings.favicon_path}}{{else}}/static/favicon.ico{{end}}">
     <!-- PWA settings -->

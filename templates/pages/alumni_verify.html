@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="dark">
     <meta name="supported-color-schemes" content="dark">
-    <title>{{.PageTitle}} - Alumni Tracker</title>
+    <title>{{.PageTitle}} - {{if .Settings.pwa_app_name}}{{.Settings.pwa_app_name}}{{else}}Alumni Tracker{{end}}</title>
     <link rel="icon" type="image/x-icon" href="{{if .Settings.favicon_path}}{{.Settings.favicon_path}}{{else}}/static/favicon.ico{{end}}">
     <!-- PWA settings -->
     <link rel="manifest" href="/manifest.json">

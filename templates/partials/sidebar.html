@@ -248,7 +248,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <button onclick="toggleSidebar()" class="p-2 -ml-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors focus:outline-none">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
         </button>
-        <span class="font-bold text-white text-base">Alumni Tracker</span>
+        <span class="font-bold text-white text-base truncate">{{if .Settings.pwa_app_name}}{{.Settings.pwa_app_name}}{{else}}Alumni Tracker{{end}}</span>
     </div>
     <div class="flex items-center gap-2">
         <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold px-2 py-1 bg-slate-800 rounded-full border border-slate-700/50">{{.User.Role}}</span>
