@@ -106,13 +106,20 @@
     <div class="relative w-full max-w-md bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-2xl backdrop-blur-xl transform transition-all duration-300 scale-90 opacity-0" id="confirmModalCard">
         <!-- Icon & Header -->
         <div class="flex flex-col items-center text-center gap-4">
-            <div class="w-12 h-12 rounded-full bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-500 animate-pulse">
+            <!-- Icon Danger/Alert -->
+            <div id="confirmModalIconDanger" class="w-12 h-12 rounded-full bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-500 animate-pulse">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                 </svg>
             </div>
+            <!-- Icon Info/Success -->
+            <div id="confirmModalIconInfo" class="w-12 h-12 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-500 hidden animate-pulse">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </div>
             <div>
-                <h3 class="text-base font-bold text-white">Konfirmasi Hapus</h3>
+                <h3 class="text-base font-bold text-white" id="confirmModalTitle">Konfirmasi Hapus</h3>
                 <p class="text-xs text-slate-400 mt-2 leading-relaxed px-2" id="confirmModalMessage">Yakin ingin menghapus data ini?</p>
             </div>
         </div>
@@ -122,7 +129,7 @@
             <button type="button" id="confirmModalCancelBtn" class="flex-1 py-2 px-4 bg-slate-800 hover:bg-slate-700 active:bg-slate-700/80 rounded-lg text-xs font-semibold text-slate-300 border border-slate-700/50 transition-all duration-150">
                 Batal
             </button>
-            <button type="button" id="confirmModalConfirmBtn" class="flex-1 py-2 px-4 bg-rose-600 hover:bg-rose-500 active:bg-rose-700 rounded-lg text-xs font-semibold text-white shadow-lg shadow-rose-600/20 transition-all duration-150">
+            <button type="button" id="confirmModalConfirmBtn" class="flex-1 py-2 px-4 bg-rose-600 hover:bg-rose-500 active:bg-rose-700 rounded-lg text-xs font-semibold text-white shadow-lg transition-all duration-150">
                 Hapus
             </button>
         </div>
@@ -134,15 +141,36 @@ document.addEventListener('DOMContentLoaded', function() {
     const modal = document.getElementById('customConfirmModal');
     const overlay = document.getElementById('confirmModalOverlay');
     const card = document.getElementById('confirmModalCard');
+    const titleEl = document.getElementById('confirmModalTitle');
     const messageEl = document.getElementById('confirmModalMessage');
+    const iconDanger = document.getElementById('confirmModalIconDanger');
+    const iconInfo = document.getElementById('confirmModalIconInfo');
     const cancelBtn = document.getElementById('confirmModalCancelBtn');
     const confirmBtn = document.getElementById('confirmModalConfirmBtn');
     
     let onConfirmCallback = null;
     
-    function showCustomConfirmModal(message, callback) {
-        messageEl.textContent = message;
+    function showCustomConfirmModal(options, callback) {
+        titleEl.textContent = options.title || "Konfirmasi";
+        messageEl.textContent = options.message || "Yakin ingin melanjutkan?";
         onConfirmCallback = callback;
+        
+        // Show correct icon based on action type
+        if (options.type === 'info' || options.type === 'success') {
+            iconDanger.classList.add('hidden');
+            iconInfo.classList.remove('hidden');
+            
+            // Adjust confirm button style
+            confirmBtn.className = "flex-1 py-2 px-4 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 rounded-lg text-xs font-semibold text-white shadow-lg shadow-blue-600/20 transition-all duration-150";
+        } else {
+            iconInfo.classList.add('hidden');
+            iconDanger.classList.remove('hidden');
+            
+            // Adjust confirm button style
+            confirmBtn.className = "flex-1 py-2 px-4 bg-rose-600 hover:bg-rose-500 active:bg-rose-700 rounded-lg text-xs font-semibold text-white shadow-lg shadow-rose-600/20 transition-all duration-150";
+        }
+        
+        confirmBtn.textContent = options.btnText || "Konfirmasi";
         
         // Show container
         modal.classList.remove('hidden');
@@ -189,7 +217,16 @@ document.addEventListener('DOMContentLoaded', function() {
         if (confirmMsg && !form.dataset.confirmed) {
             e.preventDefault();
             
-            showCustomConfirmModal(confirmMsg, function() {
+            const title = form.getAttribute('data-confirm-title');
+            const btnText = form.getAttribute('data-confirm-btn-text');
+            const type = form.getAttribute('data-confirm-type');
+            
+            showCustomConfirmModal({
+                title: title,
+                message: confirmMsg,
+                btnText: btnText,
+                type: type
+            }, function() {
                 form.dataset.confirmed = 'true';
                 form.submit();
             });
