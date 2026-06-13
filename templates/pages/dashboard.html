@@ -80,6 +80,21 @@
                 <p class="text-3xl font-bold">{{.TotalPending}}</p>
                 <p class="text-sm text-slate-400 mt-1">Pending Verifikasi</p>
             </div>
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 hover:border-cyan-500/30 transition-colors">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-10 h-10 rounded-lg bg-cyan-600/20 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                    </div>
+                    {{if gt .TotalPendingClaims 0}}
+                    <span class="flex h-2 w-2 relative">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+                    </span>
+                    {{end}}
+                </div>
+                <p class="text-3xl font-bold">{{.TotalPendingClaims}}</p>
+                <p class="text-sm text-slate-400 mt-1">Permintaan Update</p>
+            </div>
             {{end}}
         </div>
 
@@ -104,6 +119,15 @@
                     <div>
                         <p class="text-sm font-medium text-white">Verifikasi Alumni</p>
                         <p class="text-xs text-slate-500">Persetujuan pendaftaran</p>
+                    </div>
+                </a>
+                <a href="/dashboard/alumni/claims" class="flex items-center gap-3 p-4 rounded-lg bg-slate-800/50 border border-slate-700/50 hover:border-cyan-500/30 hover:bg-slate-800 transition-all group">
+                    <div class="w-10 h-10 rounded-lg bg-cyan-600/20 flex items-center justify-center group-hover:bg-cyan-600/30 transition-colors">
+                        <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-white">Permintaan Update</p>
+                        <p class="text-xs text-slate-500">Klaim & perbarui profil</p>
                     </div>
                 </a>
                 {{end}}

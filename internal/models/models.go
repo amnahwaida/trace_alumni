@@ -97,3 +97,30 @@ type Session struct {
 	ExpiresAt time.Time `json:"expires_at"`
 	CreatedAt time.Time `json:"created_at"`
 }
+
+type KlaimProfil struct {
+	ID                 int     `json:"id"`
+	AlumniID           int     `json:"alumni_id"`
+	NoWAVerifikasi     string  `json:"no_wa_verifikasi"`
+	CatatanPengklaim   *string `json:"catatan_pengklaim"`
+	UpdateNoHP         *string `json:"update_no_hp"`
+	UpdateEmail        *string `json:"update_email"`
+	UpdateDomisili     *string `json:"update_domisili"`
+	UpdatePekerjaan    *string `json:"update_pekerjaan"`
+	UpdateInstansi     *string `json:"update_instansi"`
+	UpdateLinkedIn     *string `json:"update_linkedin"`
+	UpdateFotoFilename *string `json:"update_foto_filename"`
+	Status             string  `json:"status"`
+	DibuatPada         string  `json:"dibuat_pada"`
+	// Joined fields
+	AlumniNamaLengkap  string  `json:"alumni_nama_lengkap,omitempty"`
+	AlumniTahunLulus   int     `json:"alumni_tahun_lulus,omitempty"`
+	// Original fields for comparison
+	OrigNoHP           *string `json:"orig_no_hp,omitempty"`
+	OrigEmail          *string `json:"orig_email,omitempty"`
+	OrigDomisili       *string `json:"orig_domisili,omitempty"`
+	OrigPekerjaan      *string `json:"orig_pekerjaan,omitempty"`
+	OrigInstansi       *string `json:"orig_instansi,omitempty"`
+	OrigLinkedIn       *string `json:"orig_linkedin,omitempty"`
+	OrigFotoProfil     *string `json:"orig_foto_profil,omitempty"`
+}

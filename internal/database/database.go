@@ -177,6 +177,29 @@ func RunMigrations() error {
 		log.Println("✅ Added 'status' column to alumni table")
 	}
 
+	// Create klaim_profil table
+	_, err = DB.Exec(`CREATE TABLE IF NOT EXISTS klaim_profil (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		alumni_id INTEGER NOT NULL,
+		no_wa_verifikasi TEXT NOT NULL,
+		catatan_pengklaim TEXT,
+		update_no_hp TEXT,
+		update_email TEXT,
+		update_domisili TEXT,
+		update_pekerjaan TEXT,
+		update_instansi TEXT,
+		update_linkedin TEXT,
+		update_foto_filename TEXT,
+		status TEXT DEFAULT 'pending' CHECK(status IN ('pending', 'approved', 'rejected')),
+		dibuat_pada DATETIME DEFAULT CURRENT_TIMESTAMP,
+		FOREIGN KEY(alumni_id) REFERENCES alumni(id) ON DELETE CASCADE
+	)`)
+	if err != nil {
+		log.Printf("Failed to create table klaim_profil: %v", err)
+	} else {
+		log.Println("✅ Table 'klaim_profil' created or verified")
+	}
+
 	log.Println("✅ Database migrations completed")
 	return nil
 }

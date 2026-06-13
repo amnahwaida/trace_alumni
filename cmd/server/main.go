@@ -70,6 +70,7 @@ func main() {
 	r.Get("/info", handlers.PublicPapan)
 	r.Get("/tambah-data", handlers.PublicTambahData)
 	r.Post("/api/alumni/submit", handlers.PublicTambahDataSubmit)
+	r.Post("/api/alumni/claim", handlers.PublicClaimSubmit)
 	r.Get("/login", handlers.LoginPage)
 	r.Post("/login", handlers.LoginPost)
 	r.Get("/logout", handlers.Logout)
@@ -95,10 +96,15 @@ func main() {
 		r.With(middleware.RequireRole("super_admin", "admin")).Get("/alumni/template", handlers.DownloadTemplate)
 		r.With(middleware.RequireRole("super_admin", "admin")).Post("/alumni/import", handlers.ImportAlumni)
 		
-		// Verification Tab
+		// Verification Tab (New Alumni Registration)
 		r.With(middleware.RequireRole("super_admin", "admin")).Get("/alumni/verify", handlers.AlumniVerifyList)
 		r.With(middleware.RequireRole("super_admin", "admin")).Post("/alumni/verify/approve", handlers.AlumniVerifyApprove)
 		r.With(middleware.RequireRole("super_admin", "admin")).Post("/alumni/verify/reject", handlers.AlumniVerifyReject)
+
+		// Claims / Update Data Requests
+		r.With(middleware.RequireRole("super_admin", "admin")).Get("/alumni/claims", handlers.AlumniClaimList)
+		r.With(middleware.RequireRole("super_admin", "admin")).Post("/alumni/claims/approve", handlers.AlumniClaimApprove)
+		r.With(middleware.RequireRole("super_admin", "admin")).Post("/alumni/claims/reject", handlers.AlumniClaimReject)
 
 		// Papan Pengumuman CRUD
 		r.Get("/papan", handlers.PapanList)

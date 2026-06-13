@@ -296,20 +296,22 @@ func Dashboard(w http.ResponseWriter, r *http.Request) {
 	user := middleware.GetUser(r)
 
 	// Get stats
-	var totalAlumni, totalPengumuman, totalUsers, totalPending int
+	var totalAlumni, totalPengumuman, totalUsers, totalPending, totalPendingClaims int
 	database.DB.QueryRow("SELECT COUNT(*) FROM alumni WHERE status = 'active'").Scan(&totalAlumni)
 	database.DB.QueryRow("SELECT COUNT(*) FROM alumni WHERE status = 'pending'").Scan(&totalPending)
+	database.DB.QueryRow("SELECT COUNT(*) FROM klaim_profil WHERE status = 'pending'").Scan(&totalPendingClaims)
 	database.DB.QueryRow("SELECT COUNT(*) FROM info_papan").Scan(&totalPengumuman)
 	database.DB.QueryRow("SELECT COUNT(*) FROM users").Scan(&totalUsers)
 
 	data := map[string]interface{}{
-		"User":            user,
-		"TotalAlumni":     totalAlumni,
-		"TotalPending":    totalPending,
-		"TotalPengumuman": totalPengumuman,
-		"TotalUsers":      totalUsers,
-		"PageTitle":       "Dashboard",
-		"ActiveMenu":      "dashboard",
+		"User":               user,
+		"TotalAlumni":        totalAlumni,
+		"TotalPending":       totalPending,
+		"TotalPendingClaims": totalPendingClaims,
+		"TotalPengumuman":    totalPengumuman,
+		"TotalUsers":         totalUsers,
+		"PageTitle":          "Dashboard",
+		"ActiveMenu":         "dashboard",
 	}
 	renderTemplate(w, "dashboard.html", data)
 }

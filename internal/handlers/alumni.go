@@ -430,3 +430,166 @@ func AlumniVerifyReject(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/dashboard/alumni/verify?success=Data+berhasil+ditolak", 303)
 }
 
+// ==================== Claims / Update Profile Handlers ====================
+
+func AlumniClaimList(w http.ResponseWriter, r *http.Request) {
+	user := middleware.GetUser(r)
+
+	rows, err := database.DB.Query(`
+		SELECT k.id, k.alumni_id, k.no_wa_verifikasi, k.catatan_pengklaim,
+			k.update_no_hp, k.update_email, k.update_domisili,
+			k.update_pekerjaan, k.update_instansi, k.update_linkedin,
+			k.update_foto_filename, k.status, k.dibuat_pada,
+			a.nama_lengkap, a.tahun_lulus,
+			a.no_hp, a.email, a.domisili_sekarang, a.pekerjaan,
+			a.instansi, a.url_linkedin, a.foto_profil
+		FROM klaim_profil k
+		JOIN alumni a ON k.alumni_id = a.id
+		WHERE k.status = 'pending'
+		ORDER BY k.dibuat_pada DESC`)
+	if err != nil {
+		log.Printf("Query claims error: %v", err)
+		http.Error(w, "Database error", 500)
+		return
+	}
+	defer rows.Close()
+
+	var list []models.KlaimProfil
+	for rows.Next() {
+		var k models.KlaimProfil
+		if err := rows.Scan(
+			&k.ID, &k.AlumniID, &k.NoWAVerifikasi, &k.CatatanPengklaim,
+			&k.UpdateNoHP, &k.UpdateEmail, &k.UpdateDomisili,
+			&k.UpdatePekerjaan, &k.UpdateInstansi, &k.UpdateLinkedIn,
+			&k.UpdateFotoFilename, &k.Status, &k.DibuatPada,
+			&k.AlumniNamaLengkap, &k.AlumniTahunLulus,
+			&k.OrigNoHP, &k.OrigEmail, &k.OrigDomisili, &k.OrigPekerjaan,
+			&k.OrigInstansi, &k.OrigLinkedIn, &k.OrigFotoProfil,
+		); err != nil {
+			log.Printf("Scan claim error: %v", err)
+			continue
+		}
+		list = append(list, k)
+	}
+
+	data := map[string]interface{}{
+		"User":       user,
+		"Claims":     list,
+		"PageTitle":  "Permintaan Update / Klaim Data",
+		"ActiveMenu": "claims",
+		"Success":    r.URL.Query().Get("success"),
+		"Error":      r.URL.Query().Get("error"),
+	}
+	renderTemplate(w, "alumni_claims.html", data)
+}
+
+func AlumniClaimApprove(w http.ResponseWriter, r *http.Request) {
+	claimIDStr := r.FormValue("id")
+	claimID, _ := strconv.Atoi(claimIDStr)
+	if claimID == 0 {
+		http.Redirect(w, r, "/dashboard/alumni/claims?error=ID+klaim+tidak+valid", 303)
+		return
+	}
+
+	// Fetch claim data
+	var k models.KlaimProfil
+	err := database.DB.QueryRow(`
+		SELECT id, alumni_id, update_no_hp, update_email, update_domisili,
+			update_pekerjaan, update_instansi, update_linkedin, update_foto_filename
+		FROM klaim_profil WHERE id = ? AND status = 'pending'`, claimID).Scan(
+		&k.ID, &k.AlumniID, &k.UpdateNoHP, &k.UpdateEmail, &k.UpdateDomisili,
+		&k.UpdatePekerjaan, &k.UpdateInstansi, &k.UpdateLinkedIn, &k.UpdateFotoFilename)
+	if err != nil {
+		log.Printf("Claim approve fetch error: %v", err)
+		http.Redirect(w, r, "/dashboard/alumni/claims?error=Klaim+tidak+ditemukan", 303)
+		return
+	}
+
+	// Use COALESCE(NULLIF(?, ''), column) to only update non-empty fields
+	queryUpdate := `
+		UPDATE alumni SET 
+			no_hp = COALESCE(NULLIF(?, ''), no_hp),
+			email = COALESCE(NULLIF(?, ''), email),
+			domisili_sekarang = COALESCE(NULLIF(?, ''), domisili_sekarang),
+			pekerjaan = COALESCE(NULLIF(?, ''), pekerjaan),
+			instansi = COALESCE(NULLIF(?, ''), instansi),
+			url_linkedin = COALESCE(NULLIF(?, ''), url_linkedin),
+			foto_profil = COALESCE(NULLIF(?, ''), foto_profil),
+			updated_at = CURRENT_TIMESTAMP
+		WHERE id = ?`
+
+	_, err = database.DB.Exec(queryUpdate,
+		derefStr(k.UpdateNoHP), derefStr(k.UpdateEmail), derefStr(k.UpdateDomisili),
+		derefStr(k.UpdatePekerjaan), derefStr(k.UpdateInstansi), derefStr(k.UpdateLinkedIn),
+		derefStr(k.UpdateFotoFilename), k.AlumniID)
+
+	if err != nil {
+		log.Printf("Claim approve update error: %v", err)
+		// If DB update failed and there was a new photo, clean it up
+		if k.UpdateFotoFilename != nil && *k.UpdateFotoFilename != "" {
+			dataDir := os.Getenv("DATA_DIR")
+			if dataDir == "" {
+				dataDir = "./data"
+			}
+			os.Remove(filepath.Join(dataDir, "uploads", *k.UpdateFotoFilename))
+		}
+		http.Redirect(w, r, "/dashboard/alumni/claims?error=Gagal+menerapkan+perubahan", 303)
+		return
+	}
+
+	// Mark claim as approved
+	database.DB.Exec(`UPDATE klaim_profil SET status = 'approved' WHERE id = ?`, claimID)
+
+	if r.Header.Get("HX-Request") == "true" {
+		w.Header().Set("HX-Redirect", "/dashboard/alumni/claims?success=Perubahan+berhasil+diterapkan")
+		w.WriteHeader(200)
+		return
+	}
+	http.Redirect(w, r, "/dashboard/alumni/claims?success=Perubahan+berhasil+diterapkan", 303)
+}
+
+func AlumniClaimReject(w http.ResponseWriter, r *http.Request) {
+	claimIDStr := r.FormValue("id")
+	claimID, _ := strconv.Atoi(claimIDStr)
+	if claimID == 0 {
+		http.Redirect(w, r, "/dashboard/alumni/claims?error=ID+klaim+tidak+valid", 303)
+		return
+	}
+
+	// Fetch foto filename before rejecting (to clean up orphan file)
+	var fotoFilename *string
+	database.DB.QueryRow("SELECT update_foto_filename FROM klaim_profil WHERE id = ?", claimID).Scan(&fotoFilename)
+
+	_, err := database.DB.Exec(`UPDATE klaim_profil SET status = 'rejected' WHERE id = ?`, claimID)
+	if err != nil {
+		log.Printf("Claim reject error: %v", err)
+		http.Redirect(w, r, "/dashboard/alumni/claims?error=Gagal+menolak+permintaan", 303)
+		return
+	}
+
+	// Clean up orphan photo
+	if fotoFilename != nil && *fotoFilename != "" {
+		dataDir := os.Getenv("DATA_DIR")
+		if dataDir == "" {
+			dataDir = "./data"
+		}
+		os.Remove(filepath.Join(dataDir, "uploads", *fotoFilename))
+	}
+
+	if r.Header.Get("HX-Request") == "true" {
+		w.Header().Set("HX-Redirect", "/dashboard/alumni/claims?success=Permintaan+berhasil+ditolak")
+		w.WriteHeader(200)
+		return
+	}
+	http.Redirect(w, r, "/dashboard/alumni/claims?success=Permintaan+berhasil+ditolak", 303)
+}
+
+// derefStr safely dereferences a *string, returning "" if nil
+func derefStr(s *string) string {
+	if s == nil {
+		return ""
+	}
+	return *s
+}
+
+

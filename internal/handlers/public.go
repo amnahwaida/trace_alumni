@@ -1,17 +1,65 @@
 package handlers
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"trace-alumni/internal/database"
 	"trace-alumni/internal/models"
 )
+
+var (
+	claimRateLimits = make(map[string][]time.Time)
+	rateLimitMu     sync.Mutex
+)
+
+func getClientIP(r *http.Request) string {
+	xff := r.Header.Get("X-Forwarded-For")
+	if xff != "" {
+		parts := strings.Split(xff, ",")
+		return strings.TrimSpace(parts[0])
+	}
+	ipPort := r.RemoteAddr
+	if idx := strings.LastIndex(ipPort, ":"); idx != -1 {
+		return ipPort[:idx]
+	}
+	return ipPort
+}
+
+func isRateLimited(ip string) bool {
+	rateLimitMu.Lock()
+	defer rateLimitMu.Unlock()
+	now := time.Now()
+	times, exists := claimRateLimits[ip]
+	if !exists {
+		claimRateLimits[ip] = []time.Time{now}
+		return false
+	}
+	
+	// Filter times in the last 24 hours
+	var activeTimes []time.Time
+	for _, t := range times {
+		if now.Sub(t) < 24*time.Hour {
+			activeTimes = append(activeTimes, t)
+		}
+	}
+	
+	if len(activeTimes) >= 3 {
+		claimRateLimits[ip] = activeTimes
+		return true
+	}
+	
+	activeTimes = append(activeTimes, now)
+	claimRateLimits[ip] = activeTimes
+	return false
+}
 
 func LandingPage(w http.ResponseWriter, r *http.Request) {
 	data := map[string]interface{}{
@@ -123,3 +171,109 @@ func PublicTambahDataSubmit(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/tambah-data?success=Data+berhasil+dikirim.+Silahkan+tunggu+proses+verifikasi+oleh+pihak+sekolah.", 303)
 }
 
+func PublicClaimSubmit(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	if r.Method != http.MethodPost {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		json.NewEncoder(w).Encode(map[string]interface{}{"success": false, "error": "Method tidak diperbolehkan"})
+		return
+	}
+
+	ip := getClientIP(r)
+	if isRateLimited(ip) {
+		w.WriteHeader(http.StatusTooManyRequests)
+		json.NewEncoder(w).Encode(map[string]interface{}{"success": false, "error": "Batas pengiriman (3 kali per hari per IP) terlampaui."})
+		return
+	}
+
+	err := r.ParseMultipartForm(5 << 20) // 5 MB
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]interface{}{"success": false, "error": "Gagal memproses form"})
+		return
+	}
+
+	alumniIDStr := strings.TrimSpace(r.FormValue("alumni_id"))
+	noWA := strings.TrimSpace(r.FormValue("no_wa_verifikasi"))
+	catatan := strings.TrimSpace(r.FormValue("catatan_pengklaim"))
+	
+	upNoHP := strings.TrimSpace(r.FormValue("update_no_hp"))
+	upEmail := strings.TrimSpace(r.FormValue("update_email"))
+	upDomisili := strings.TrimSpace(r.FormValue("update_domisili"))
+	upPekerjaan := strings.TrimSpace(r.FormValue("update_pekerjaan"))
+	upInstansi := strings.TrimSpace(r.FormValue("update_instansi"))
+	upLinkedIn := strings.TrimSpace(r.FormValue("update_linkedin"))
+
+	if alumniIDStr == "" || noWA == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]interface{}{"success": false, "error": "ID Alumni dan Nomor WhatsApp wajib diisi"})
+		return
+	}
+
+	alumniID, err := strconv.Atoi(alumniIDStr)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]interface{}{"success": false, "error": "ID Alumni tidak valid"})
+		return
+	}
+
+	// Validate WhatsApp
+	if !strings.HasPrefix(noWA, "08") || len(noWA) < 10 || len(noWA) > 15 {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]interface{}{"success": false, "error": "Nomor WhatsApp tidak valid (harus diawali '08' dengan panjang 10-15 digit)"})
+		return
+	}
+
+	// Validate alumni exists
+	var exists bool
+	err = database.DB.QueryRow("SELECT EXISTS(SELECT 1 FROM alumni WHERE id = ? AND status = 'active')", alumniID).Scan(&exists)
+	if err != nil || !exists {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]interface{}{"success": false, "error": "Alumni tidak ditemukan atau tidak aktif"})
+		return
+	}
+
+	// Process image upload
+	fotoFileName, err := ProcessPhoto(r, "update_foto")
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]interface{}{"success": false, "error": err.Error()})
+		return
+	}
+
+	var fotoPtr *string
+	if fotoFileName != "" {
+		fotoPtr = &fotoFileName
+	}
+
+	_, err = database.DB.Exec(`
+		INSERT INTO klaim_profil (
+			alumni_id, no_wa_verifikasi, catatan_pengklaim,
+			update_no_hp, update_email, update_domisili,
+			update_pekerjaan, update_instansi, update_linkedin,
+			update_foto_filename, status
+		) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')`,
+		alumniID, noWA, ns(catatan),
+		ns(upNoHP), ns(upEmail), ns(upDomisili),
+		ns(upPekerjaan), ns(upInstansi), ns(upLinkedIn),
+		fotoPtr)
+
+	if err != nil {
+		log.Printf("Insert claim DB error: %v", err)
+		if fotoFileName != "" {
+			dataDir := os.Getenv("DATA_DIR")
+			if dataDir == "" {
+				dataDir = "./data"
+			}
+			os.Remove(filepath.Join(dataDir, "uploads", fotoFileName))
+		}
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]interface{}{"success": false, "error": "Gagal menyimpan permintaan update ke database"})
+		return
+	}
+
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"success": true,
+		"message": "Permintaan berhasil dikirim! Admin akan memverifikasi melalui WhatsApp dalam 1x24 jam.",
+	})
+}

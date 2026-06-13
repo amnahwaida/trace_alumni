@@ -118,12 +118,234 @@
         </section>
     </main>
 
-    <!-- Footer -->
-    <footer class="border-t border-slate-800 py-8 px-4">
-        <div class="max-w-6xl mx-auto text-center text-slate-500 text-xs sm:text-sm">
-            <p>{{if .Settings.project_credit}}{{.Settings.project_credit | safeHTML}}{{else}}&copy; 2026 SMAS Muhammadiyah 1 Ngawi. Sistem Rekam Jejak Alumni.{{end}}</p>
+    <!-- Claim/Update Modal -->
+    <div id="claimModal" class="fixed inset-0 z-[9999] hidden flex items-center justify-center p-4">
+        <!-- Overlay -->
+        <div class="absolute inset-0 bg-slate-950/70 backdrop-blur-sm transition-opacity duration-300 opacity-0" id="claimModalOverlay" onclick="closeClaimModal()"></div>
+        
+        <!-- Modal Card -->
+        <div class="relative w-full max-w-xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl backdrop-blur-xl transform transition-all duration-300 scale-95 opacity-0 flex flex-col max-h-[90vh]" id="claimModalCard">
+            <!-- Header -->
+            <div class="p-5 border-b border-slate-800 flex justify-between items-center flex-shrink-0">
+                <div>
+                    <h3 class="text-base font-bold text-white" id="claimModalTitle">Klaim & Lengkapi / Perbarui Data</h3>
+                    <p class="text-xs text-slate-400 mt-1">Mengajukan perubahan data untuk alumni: <span id="claimAlumniName" class="font-semibold text-blue-400"></span></p>
+                </div>
+                <button onclick="closeClaimModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <!-- Alert messages in modal -->
+            <div id="modalAlert" class="px-5 pt-4 hidden">
+                <div class="p-3 rounded-lg text-xs flex gap-2" id="modalAlertBox">
+                    <span id="modalAlertText"></span>
+                </div>
+            </div>
+
+            <!-- Scrollable Form Body -->
+            <form id="claimForm" onsubmit="event.preventDefault(); submitClaimForm();" enctype="multipart/form-data" class="flex-1 overflow-y-auto p-5 space-y-4">
+                <input type="hidden" name="alumni_id" id="claimAlumniId">
+
+                <!-- Section 1: Verification Contact -->
+                <div class="bg-blue-950/20 border border-blue-900/40 rounded-xl p-4 space-y-3">
+                    <h4 class="text-xs font-bold text-blue-400 uppercase tracking-wider">Kontak Verifikasi WhatsApp</h4>
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1.5 font-semibold">Nomor WhatsApp Aktif <span class="text-rose-500">*</span></label>
+                        <input type="tel" name="no_wa_verifikasi" required
+                            class="w-full px-3 py-2 bg-slate-950/40 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm"
+                            placeholder="Contoh: 08123456789">
+                        <p class="text-[10px] text-slate-500 mt-1">Admin akan menghubungi nomor WhatsApp ini untuk memverifikasi data Anda.</p>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1.5 font-semibold">Catatan Tambahan (Opsional)</label>
+                        <textarea name="catatan_pengklaim" rows="2"
+                            class="w-full px-3 py-2 bg-slate-950/40 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm"
+                            placeholder="Tulis pesan atau info tambahan untuk mempermudah verifikasi admin..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Section 2: Data Usulan Baru -->
+                <div class="space-y-4">
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider pt-2 border-t border-slate-800/60">Data Usulan Baru</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs text-slate-300 mb-1.5 font-semibold">Nomor HP Baru</label>
+                            <input type="tel" name="update_no_hp" id="claimNoHP"
+                                class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm"
+                                placeholder="Contoh: 08123456789">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-300 mb-1.5 font-semibold">Email Baru</label>
+                            <input type="email" name="update_email" id="claimEmail"
+                                class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm"
+                                placeholder="Contoh: budi@mail.com">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs text-slate-300 mb-1.5 font-semibold">Domisili Sekarang</label>
+                            <input type="text" name="update_domisili" id="claimDomisili"
+                                class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm"
+                                placeholder="Contoh: Surabaya">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-300 mb-1.5 font-semibold">Pekerjaan</label>
+                            <input type="text" name="update_pekerjaan" id="claimPekerjaan"
+                                class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm"
+                                placeholder="Contoh: PNS">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs text-slate-300 mb-1.5 font-semibold">Instansi / Kantor</label>
+                            <input type="text" name="update_instansi" id="claimInstansi"
+                                class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm"
+                                placeholder="Contoh: Kementerian Kesehatan">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-300 mb-1.5 font-semibold">LinkedIn URL</label>
+                            <input type="url" name="update_linkedin" id="claimLinkedIn"
+                                class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm"
+                                placeholder="Contoh: https://linkedin.com/in/...">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1.5 font-semibold">Foto Profil Baru (Opsional - Maks 2MB)</label>
+                        <input type="file" name="update_foto" accept="image/*"
+                            class="block w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-600/20 file:text-blue-400 hover:file:bg-blue-600/30 file:cursor-pointer cursor-pointer">
+                        <p class="text-[10px] text-slate-500 mt-1">Format: JPG, PNG, GIF. Otomatis dikompresi & di-resize ke 200x200 px.</p>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Footer Actions -->
+            <div class="p-5 border-t border-slate-800 flex gap-3 flex-shrink-0 bg-slate-900/60">
+                <button type="button" onclick="closeClaimModal()"
+                    class="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 active:bg-slate-800/80 rounded-lg text-xs font-semibold text-slate-300 border border-slate-700/50 transition-all">
+                    Batal
+                </button>
+                <button type="button" id="submitClaimBtn" onclick="submitClaimForm()"
+                    class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 rounded-lg text-xs font-semibold text-white shadow-lg shadow-blue-600/20 transition-all">
+                    Kirim Permintaan
+                </button>
+            </div>
         </div>
-    </footer>
+    </div>
+
+    <script>
+        function openClaimModal(alumniId, name, graduationYear, phone, email, domicile, job, office, linkedin) {
+            // Setup values
+            document.getElementById('claimAlumniId').value = alumniId;
+            document.getElementById('claimAlumniName').textContent = name + " (" + graduationYear + ")";
+            
+            // Prefill usulan data
+            document.getElementById('claimNoHP').value = phone || "";
+            document.getElementById('claimEmail').value = email || "";
+            document.getElementById('claimDomisili').value = domicile || "";
+            document.getElementById('claimPekerjaan').value = job || "";
+            document.getElementById('claimInstansi').value = office || "";
+            document.getElementById('claimLinkedIn').value = linkedin || "";
+            
+            // Clear WA & Catatan
+            const form = document.getElementById('claimForm');
+            form.reset();
+            document.getElementById('claimAlumniId').value = alumniId; // restore
+            
+            // Re-prefill since reset clears everything
+            document.getElementById('claimNoHP').value = phone || "";
+            document.getElementById('claimEmail').value = email || "";
+            document.getElementById('claimDomisili').value = domicile || "";
+            document.getElementById('claimPekerjaan').value = job || "";
+            document.getElementById('claimInstansi').value = office || "";
+            document.getElementById('claimLinkedIn').value = linkedin || "";
+            
+            document.getElementById('modalAlert').classList.add('hidden');
+            
+            const modal = document.getElementById('claimModal');
+            const overlay = document.getElementById('claimModalOverlay');
+            const card = document.getElementById('claimModalCard');
+            
+            modal.classList.remove('hidden');
+            void modal.offsetWidth;
+            overlay.classList.remove('opacity-0');
+            overlay.classList.add('opacity-100');
+            card.classList.remove('scale-95', 'opacity-0');
+            card.classList.add('scale-100', 'opacity-100');
+            
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeClaimModal() {
+            const modal = document.getElementById('claimModal');
+            const overlay = document.getElementById('claimModalOverlay');
+            const card = document.getElementById('claimModalCard');
+            
+            overlay.classList.remove('opacity-100');
+            overlay.classList.add('opacity-0');
+            card.classList.remove('scale-100', 'opacity-100');
+            card.classList.add('scale-95', 'opacity-0');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }, 300);
+        }
+
+        function submitClaimForm() {
+            const form = document.getElementById('claimForm');
+            const waInput = form.querySelector('[name="no_wa_verifikasi"]');
+            
+            if (!waInput.value.trim().startsWith('08') || waInput.value.trim().length < 10 || waInput.value.trim().length > 15) {
+                showModalAlert("Nomor WhatsApp tidak valid (harus diawali '08' dengan panjang 10-15 digit)", "error");
+                return;
+            }
+            
+            const submitBtn = document.getElementById('submitClaimBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Mengirim...";
+            
+            const formData = new FormData(form);
+            
+            fetch('/api/alumni/claim', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Kirim Permintaan";
+                if (data.success) {
+                    showModalAlert(data.message || "Permintaan berhasil dikirim! Admin akan memverifikasi melalui WhatsApp dalam 1x24 jam.", "success");
+                    setTimeout(() => {
+                        closeClaimModal();
+                    }, 3000);
+                } else {
+                    showModalAlert(data.error || "Gagal mengirim permintaan.", "error");
+                }
+            })
+            .catch(err => {
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Kirim Permintaan";
+                showModalAlert("Terjadi kesalahan jaringan.", "error");
+            });
+        }
+
+        function showModalAlert(message, type) {
+            const alertContainer = document.getElementById('modalAlert');
+            const alertBox = document.getElementById('modalAlertBox');
+            const alertText = document.getElementById('modalAlertText');
+            
+            alertText.textContent = message;
+            alertContainer.classList.remove('hidden');
+            
+            if (type === 'success') {
+                alertBox.className = "p-3 rounded-lg text-xs flex gap-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400";
+            } else {
+                alertBox.className = "p-3 rounded-lg text-xs flex gap-2 bg-rose-500/10 border border-rose-500/20 text-rose-400";
+            }
+        }
+    </script>
 </body>
 </html>
 {{end}}

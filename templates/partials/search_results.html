@@ -36,6 +36,22 @@
                     <span>📱 {{.MaskedNoHP}}</span>
                     <span>📧 {{.MaskedEmail}}</span>
                 </div>
+                
+                <!-- Claim / Update Profile Action Button -->
+                <div class="mt-4 border-t border-slate-800/60 pt-3">
+                    {{$isMinim := or (not .NoHP) (not .Email) (not .DomisiliSekarang) (eq (deref .NoHP) "") (eq (deref .Email) "") (eq (deref .DomisiliSekarang) "")}}
+                    {{if $isMinim}}
+                    <button onclick='openClaimModal({{.ID}}, "{{.NamaLengkap}}", {{.TahunLulus}}, "", "", "{{if .DomisiliSekarang}}{{deref .DomisiliSekarang}}{{end}}", "{{if .Pekerjaan}}{{deref .Pekerjaan}}{{end}}", "{{if .Instansi}}{{deref .Instansi}}{{end}}", "{{if .URLLinkedIn}}{{deref .URLLinkedIn}}{{end}}")' 
+                            class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600/10 hover:bg-blue-600/20 text-blue-400 hover:text-blue-300 border border-blue-500/20 hover:border-blue-500/40 rounded-lg text-xs font-semibold transition-all">
+                        📝 Ini Profil Saya? Klaim & Lengkapi Data
+                    </button>
+                    {{else}}
+                    <button onclick='openClaimModal({{.ID}}, "{{.NamaLengkap}}", {{.TahunLulus}}, "{{deref .NoHP}}", "{{deref .Email}}", "{{if .DomisiliSekarang}}{{deref .DomisiliSekarang}}{{end}}", "{{if .Pekerjaan}}{{deref .Pekerjaan}}{{end}}", "{{if .Instansi}}{{deref .Instansi}}{{end}}", "{{if .URLLinkedIn}}{{deref .URLLinkedIn}}{{end}}")' 
+                            class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700/50 rounded-lg text-xs font-semibold transition-all">
+                        📝 Data Saya Berubah? Ajukan Perbarui Data
+                    </button>
+                    {{end}}
+                </div>
             </div>
         </div>
     </div>
