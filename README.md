@@ -85,6 +85,51 @@ docker compose down
 
 ---
 
+## 🖥️ Cara Mengatasi di STB (Menggunakan Laptop/PC)
+
+Jika Anda men-deploy ke perangkat dengan spesifikasi terbatas seperti **STB (1 GB RAM, sisa penyimpanan < 1 GB)**, proses kompilasi lokal dengan `docker compose up -d --build` kemungkinan besar akan gagal karena kehabisan ruang penyimpanan (`no space left on device`) saat mengunduh dependency Go.
+
+Untuk mengatasinya, Anda dapat mem-build Docker image untuk arsitektur ARM64 di laptop/PC Anda, lalu mengirimkannya ke STB.
+
+### Langkah 1: Build Image di Laptop / PC Anda
+1. Pastikan Docker dan Git sudah terinstal di laptop Anda.
+2. Clone repositori ini di laptop Anda:
+   ```bash
+   git clone https://github.com/amnahwaida/trace_alumni.git
+   cd trace_alumni
+   ```
+3. Jalankan script build khusus STB yang disediakan:
+   ```bash
+   ./deploy-stb.sh
+   ```
+   Script ini akan otomatis mengompilasi program untuk arsitektur ARM64 (STB) menggunakan Docker Buildx dan menghasilkan file portable bernama **`alumni-tracker-arm64.tar.gz`** (ukuran kompresi sekitar ~15 MB).
+
+### Langkah 2: Transfer File Hasil Build ke STB
+Kirim file `.tar.gz` tersebut ke STB Anda menggunakan perintah `scp`:
+```bash
+scp alumni-tracker-arm64.tar.gz username_stb@ip_stb:~/
+```
+
+### Langkah 3: Jalankan di STB
+1. Masuk ke terminal SSH STB Anda.
+2. Bersihkan cache build docker lama untuk melegakan penyimpanan STB:
+   ```bash
+   sudo docker system prune -a --volumes -f
+   ```
+3. Load image pra-build yang sudah ditransfer ke dalam Docker STB:
+   ```bash
+   sudo docker load < ~/alumni-tracker-arm64.tar.gz
+   ```
+4. Masuk ke folder project di STB, lalu jalankan container (pastikan `docker-compose.yml` Anda sudah ter-update):
+   ```bash
+   cd ~/trace_alumni
+   git pull origin main
+   sudo docker compose up -d
+   ```
+   *Catatan: Jangan tambahkan parameter `--build` di STB agar Docker tidak memicu proses kompilasi lokal yang memakan memori.*
+
+---
+
 ## 💾 Folder Struktur & Mount Volume
 
 Volume pada Docker Compose diarahkan pada folder `data/` di root proyek untuk mempermudah backup. Folder ini berisi:
