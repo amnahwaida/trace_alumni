@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"strings"
 	"time"
 )
@@ -60,6 +61,94 @@ func (a *Alumni) MaskedEmail() string {
 		return "***" + email[atIdx:]
 	}
 	return email[:2] + "***" + email[atIdx:]
+}
+
+// MaskText is a helper to mask a generic string value
+func MaskText(val string) string {
+	r := []rune(val)
+	if len(r) == 0 {
+		return "-"
+	}
+	if len(r) <= 3 {
+		return string(r[:1]) + "**"
+	}
+	if len(r) <= 5 {
+		return string(r[:2]) + "***"
+	}
+	return string(r[:2]) + "***" + string(r[len(r)-2:])
+}
+
+// FormattedTahunLulus returns tahun lulus based on visibility settings
+func (a *Alumni) FormattedTahunLulus(setting string) string {
+	if setting == "hide" {
+		return ""
+	}
+	yearStr := fmt.Sprintf("%d", a.TahunLulus)
+	if setting == "mask" {
+		if len(yearStr) < 4 {
+			return "**"
+		}
+		return yearStr[:2] + "**"
+	}
+	return yearStr
+}
+
+// FormattedDomisili returns domisili based on visibility settings
+func (a *Alumni) FormattedDomisili(setting string) string {
+	if setting == "hide" || a.DomisiliSekarang == nil || *a.DomisiliSekarang == "" {
+		return ""
+	}
+	val := *a.DomisiliSekarang
+	if setting == "mask" {
+		return MaskText(val)
+	}
+	return val
+}
+
+// FormattedPekerjaan returns pekerjaan based on visibility settings
+func (a *Alumni) FormattedPekerjaan(setting string) string {
+	if setting == "hide" || a.Pekerjaan == nil || *a.Pekerjaan == "" {
+		return ""
+	}
+	val := *a.Pekerjaan
+	if setting == "mask" {
+		return MaskText(val)
+	}
+	return val
+}
+
+// FormattedInstansi returns instansi based on visibility settings
+func (a *Alumni) FormattedInstansi(setting string) string {
+	if setting == "hide" || a.Instansi == nil || *a.Instansi == "" {
+		return ""
+	}
+	val := *a.Instansi
+	if setting == "mask" {
+		return MaskText(val)
+	}
+	return val
+}
+
+// FormattedNoHP returns phone number based on visibility settings
+func (a *Alumni) FormattedNoHP(setting string) string {
+	if setting == "hide" || a.NoHP == nil || *a.NoHP == "" {
+		return ""
+	}
+	if setting == "mask" {
+		return a.MaskedNoHP()
+	}
+	return *a.NoHP
+}
+
+// FormattedEmail returns email based on visibility settings
+func (a *Alumni) FormattedEmail(setting string) string {
+	if setting == "hide" || a.Email == nil || *a.Email == "" {
+		return ""
+	}
+	if setting == "mask" {
+		return a.MaskedEmail()
+	}
+	return *a.Email
 }
 
 type InfoPapan struct {

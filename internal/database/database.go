@@ -108,6 +108,12 @@ func RunMigrations() error {
 	_, _ = DB.Exec(`INSERT OR IGNORE INTO settings (key, value) VALUES ('logo_path', '')`)
 	_, _ = DB.Exec(`INSERT OR IGNORE INTO settings (key, value) VALUES ('pwa_app_name', 'Alumni Tracker')`)
 	_, _ = DB.Exec(`INSERT OR IGNORE INTO settings (key, value) VALUES ('pwa_icon_path', '')`)
+	_, _ = DB.Exec(`INSERT OR IGNORE INTO settings (key, value) VALUES ('search_show_tahun_lulus', 'show')`)
+	_, _ = DB.Exec(`INSERT OR IGNORE INTO settings (key, value) VALUES ('search_show_domisili', 'show')`)
+	_, _ = DB.Exec(`INSERT OR IGNORE INTO settings (key, value) VALUES ('search_show_pekerjaan', 'show')`)
+	_, _ = DB.Exec(`INSERT OR IGNORE INTO settings (key, value) VALUES ('search_show_instansi', 'show')`)
+	_, _ = DB.Exec(`INSERT OR IGNORE INTO settings (key, value) VALUES ('search_show_no_hp', 'mask')`)
+	_, _ = DB.Exec(`INSERT OR IGNORE INTO settings (key, value) VALUES ('search_show_email', 'mask')`)
 
 	var hasIsActive bool
 	rows, err := DB.Query("PRAGMA table_info(info_papan)")

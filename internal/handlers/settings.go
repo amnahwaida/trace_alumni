@@ -56,6 +56,28 @@ func SettingsSave(w http.ResponseWriter, r *http.Request) {
 	_, _ = database.DB.Exec("UPDATE settings SET value = ? WHERE key = 'papan_description'", papanDescription)
 	_, _ = database.DB.Exec("UPDATE settings SET value = ? WHERE key = 'pwa_app_name'", pwaAppName)
 
+	validOpt := func(val string, def string) string {
+		val = strings.TrimSpace(val)
+		if val == "show" || val == "mask" || val == "hide" {
+			return val
+		}
+		return def
+	}
+
+	searchShowTahunLulus := validOpt(r.FormValue("search_show_tahun_lulus"), "show")
+	searchShowDomisili := validOpt(r.FormValue("search_show_domisili"), "show")
+	searchShowPekerjaan := validOpt(r.FormValue("search_show_pekerjaan"), "show")
+	searchShowInstansi := validOpt(r.FormValue("search_show_instansi"), "show")
+	searchShowNoHP := validOpt(r.FormValue("search_show_no_hp"), "mask")
+	searchShowEmail := validOpt(r.FormValue("search_show_email"), "mask")
+
+	_, _ = database.DB.Exec("UPDATE settings SET value = ? WHERE key = 'search_show_tahun_lulus'", searchShowTahunLulus)
+	_, _ = database.DB.Exec("UPDATE settings SET value = ? WHERE key = 'search_show_domisili'", searchShowDomisili)
+	_, _ = database.DB.Exec("UPDATE settings SET value = ? WHERE key = 'search_show_pekerjaan'", searchShowPekerjaan)
+	_, _ = database.DB.Exec("UPDATE settings SET value = ? WHERE key = 'search_show_instansi'", searchShowInstansi)
+	_, _ = database.DB.Exec("UPDATE settings SET value = ? WHERE key = 'search_show_no_hp'", searchShowNoHP)
+	_, _ = database.DB.Exec("UPDATE settings SET value = ? WHERE key = 'search_show_email'", searchShowEmail)
+
 	// Process logo file
 	logoPath, err := processUploadedLogo(r, "logo")
 	if err != nil {
@@ -154,6 +176,10 @@ func SettingsReset(w http.ResponseWriter, r *http.Request) {
 	case "pwa_icon_path":
 		defaultValue = ""
 		isFile = true
+	case "search_show_tahun_lulus", "search_show_domisili", "search_show_pekerjaan", "search_show_instansi":
+		defaultValue = "show"
+	case "search_show_no_hp", "search_show_email":
+		defaultValue = "mask"
 	default:
 		http.Redirect(w, r, "/dashboard/settings?error=Kunci+pengaturan+tidak+valid", 303)
 		return

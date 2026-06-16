@@ -154,6 +154,92 @@
                     </div>
                 </div>
 
+                <!-- Search Visibility & Privacy Section -->
+                <div class="pt-4 border-t border-slate-800 space-y-4">
+                    <h3 class="text-sm font-semibold text-blue-400">Pengaturan Tampilan Pencarian & Privasi Data</h3>
+                    <p class="text-xs text-slate-400">Atur visibilitas data alumni pada hasil pencarian publik (landing page).</p>
+                    
+                    <div class="space-y-3 bg-slate-950/40 p-4 rounded-xl border border-slate-800/80">
+                        <!-- Tahun Lulus -->
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-800/50">
+                            <div>
+                                <span class="text-xs font-semibold text-slate-300">Tahun Lulus</span>
+                                <p class="text-[10px] text-slate-500">Tahun kelulusan alumni</p>
+                            </div>
+                            <select name="search_show_tahun_lulus" class="bg-slate-900 border border-slate-850 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-blue-500/50 w-full sm:w-48">
+                                <option value="show" {{if eq .Settings.search_show_tahun_lulus "show"}}selected{{end}}>Tampilkan Penuh</option>
+                                <option value="mask" {{if eq .Settings.search_show_tahun_lulus "mask"}}selected{{end}}>Sensoring (Masking)</option>
+                                <option value="hide" {{if eq .Settings.search_show_tahun_lulus "hide"}}selected{{end}}>Sembunyikan</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Domisili -->
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-800/50">
+                            <div>
+                                <span class="text-xs font-semibold text-slate-300">Domisili</span>
+                                <p class="text-[10px] text-slate-500">Kota tinggal alumni sekarang</p>
+                            </div>
+                            <select name="search_show_domisili" class="bg-slate-900 border border-slate-850 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-blue-500/50 w-full sm:w-48">
+                                <option value="show" {{if eq .Settings.search_show_domisili "show"}}selected{{end}}>Tampilkan Penuh</option>
+                                <option value="mask" {{if eq .Settings.search_show_domisili "mask"}}selected{{end}}>Sensoring (Masking)</option>
+                                <option value="hide" {{if eq .Settings.search_show_domisili "hide"}}selected{{end}}>Sembunyikan</option>
+                            </select>
+                        </div>
+
+                        <!-- Pekerjaan -->
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-800/50">
+                            <div>
+                                <span class="text-xs font-semibold text-slate-300">Pekerjaan</span>
+                                <p class="text-[10px] text-slate-500">Profesi atau pekerjaan alumni</p>
+                            </div>
+                            <select name="search_show_pekerjaan" class="bg-slate-900 border border-slate-850 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-blue-500/50 w-full sm:w-48">
+                                <option value="show" {{if eq .Settings.search_show_pekerjaan "show"}}selected{{end}}>Tampilkan Penuh</option>
+                                <option value="mask" {{if eq .Settings.search_show_pekerjaan "mask"}}selected{{end}}>Sensoring (Masking)</option>
+                                <option value="hide" {{if eq .Settings.search_show_pekerjaan "hide"}}selected{{end}}>Sembunyikan</option>
+                            </select>
+                        </div>
+
+                        <!-- Instansi -->
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-800/50">
+                            <div>
+                                <span class="text-xs font-semibold text-slate-300">Instansi / Kantor</span>
+                                <p class="text-[10px] text-slate-500">Tempat bekerja/belajar alumni</p>
+                            </div>
+                            <select name="search_show_instansi" class="bg-slate-900 border border-slate-850 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-blue-500/50 w-full sm:w-48">
+                                <option value="show" {{if eq .Settings.search_show_instansi "show"}}selected{{end}}>Tampilkan Penuh</option>
+                                <option value="mask" {{if eq .Settings.search_show_instansi "mask"}}selected{{end}}>Sensoring (Masking)</option>
+                                <option value="hide" {{if eq .Settings.search_show_instansi "hide"}}selected{{end}}>Sembunyikan</option>
+                            </select>
+                        </div>
+
+                        <!-- Nomor HP -->
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-800/50">
+                            <div>
+                                <span class="text-xs font-semibold text-slate-300">Nomor HP / WA</span>
+                                <p class="text-[10px] text-slate-500">Nomor kontak alumni</p>
+                            </div>
+                            <select name="search_show_no_hp" class="bg-slate-900 border border-slate-850 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-blue-500/50 w-full sm:w-48">
+                                <option value="show" {{if eq .Settings.search_show_no_hp "show"}}selected{{end}}>Tampilkan Penuh</option>
+                                <option value="mask" {{if eq .Settings.search_show_no_hp "mask"}}selected{{end}}>Sensoring (Masking)</option>
+                                <option value="hide" {{if eq .Settings.search_show_no_hp "hide"}}selected{{end}}>Sembunyikan</option>
+                            </select>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div>
+                                <span class="text-xs font-semibold text-slate-300">Email</span>
+                                <p class="text-[10px] text-slate-500">Alamat surel alumni</p>
+                            </div>
+                            <select name="search_show_email" class="bg-slate-900 border border-slate-850 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-blue-500/50 w-full sm:w-48">
+                                <option value="show" {{if eq .Settings.search_show_email "show"}}selected{{end}}>Tampilkan Penuh</option>
+                                <option value="mask" {{if eq .Settings.search_show_email "mask"}}selected{{end}}>Sensoring (Masking)</option>
+                                <option value="hide" {{if eq .Settings.search_show_email "hide"}}selected{{end}}>Sembunyikan</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Save Button -->
                 <div class="pt-4 border-t border-slate-800 flex items-center justify-end gap-3">
                     <button type="submit" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-sm font-semibold transition-colors shadow-lg shadow-blue-600/15">
@@ -258,6 +344,73 @@
                         </button>
                     </form>
                     {{end}}
+
+                    <!-- Reset Tampilan Pencarian & Privasi -->
+                    <form method="POST" action="/dashboard/settings/reset" class="flex items-center justify-between bg-slate-950/50 rounded-lg px-4 py-3 border border-slate-800/50">
+                        <input type="hidden" name="key" value="search_show_tahun_lulus">
+                        <div>
+                            <p class="text-xs font-semibold text-slate-300">Reset Privasi: Tahun Lulus</p>
+                            <p class="text-[10px] text-slate-500 mt-0.5">Default: Tampilkan Penuh</p>
+                        </div>
+                        <button type="submit" class="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 rounded-lg text-xs font-semibold border border-red-500/20 hover:border-red-500/30 transition-all">
+                            Reset
+                        </button>
+                    </form>
+
+                    <form method="POST" action="/dashboard/settings/reset" class="flex items-center justify-between bg-slate-950/50 rounded-lg px-4 py-3 border border-slate-800/50">
+                        <input type="hidden" name="key" value="search_show_domisili">
+                        <div>
+                            <p class="text-xs font-semibold text-slate-300">Reset Privasi: Domisili</p>
+                            <p class="text-[10px] text-slate-500 mt-0.5">Default: Tampilkan Penuh</p>
+                        </div>
+                        <button type="submit" class="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 rounded-lg text-xs font-semibold border border-red-500/20 hover:border-red-500/30 transition-all">
+                            Reset
+                        </button>
+                    </form>
+
+                    <form method="POST" action="/dashboard/settings/reset" class="flex items-center justify-between bg-slate-950/50 rounded-lg px-4 py-3 border border-slate-800/50">
+                        <input type="hidden" name="key" value="search_show_pekerjaan">
+                        <div>
+                            <p class="text-xs font-semibold text-slate-300">Reset Privasi: Pekerjaan</p>
+                            <p class="text-[10px] text-slate-500 mt-0.5">Default: Tampilkan Penuh</p>
+                        </div>
+                        <button type="submit" class="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 rounded-lg text-xs font-semibold border border-red-500/20 hover:border-red-500/30 transition-all">
+                            Reset
+                        </button>
+                    </form>
+
+                    <form method="POST" action="/dashboard/settings/reset" class="flex items-center justify-between bg-slate-950/50 rounded-lg px-4 py-3 border border-slate-800/50">
+                        <input type="hidden" name="key" value="search_show_instansi">
+                        <div>
+                            <p class="text-xs font-semibold text-slate-300">Reset Privasi: Instansi / Kantor</p>
+                            <p class="text-[10px] text-slate-500 mt-0.5">Default: Tampilkan Penuh</p>
+                        </div>
+                        <button type="submit" class="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 rounded-lg text-xs font-semibold border border-red-500/20 hover:border-red-500/30 transition-all">
+                            Reset
+                        </button>
+                    </form>
+
+                    <form method="POST" action="/dashboard/settings/reset" class="flex items-center justify-between bg-slate-950/50 rounded-lg px-4 py-3 border border-slate-800/50">
+                        <input type="hidden" name="key" value="search_show_no_hp">
+                        <div>
+                            <p class="text-xs font-semibold text-slate-300">Reset Privasi: Nomor HP</p>
+                            <p class="text-[10px] text-slate-500 mt-0.5">Default: Sensoring (Masking)</p>
+                        </div>
+                        <button type="submit" class="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 rounded-lg text-xs font-semibold border border-red-500/20 hover:border-red-500/30 transition-all">
+                            Reset
+                        </button>
+                    </form>
+
+                    <form method="POST" action="/dashboard/settings/reset" class="flex items-center justify-between bg-slate-950/50 rounded-lg px-4 py-3 border border-slate-800/50">
+                        <input type="hidden" name="key" value="search_show_email">
+                        <div>
+                            <p class="text-xs font-semibold text-slate-300">Reset Privasi: Email</p>
+                            <p class="text-[10px] text-slate-500 mt-0.5">Default: Sensoring (Masking)</p>
+                        </div>
+                        <button type="submit" class="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 rounded-lg text-xs font-semibold border border-red-500/20 hover:border-red-500/30 transition-all">
+                            Reset
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
