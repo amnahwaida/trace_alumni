@@ -184,17 +184,7 @@
                 <div class="space-y-4">
                     <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider pt-2 border-t border-slate-800/60">Data Usulan Baru</h4>
                     
-                    <!-- Old Data Info (Hidden by default / Masked) -->
-                    <div class="bg-slate-950/40 border border-slate-800 rounded-xl p-3 space-y-2" id="oldDataSection">
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-slate-400 font-medium">No. HP Saat Ini:</span>
-                            <span id="labelOldPhone" class="font-mono text-slate-300"></span>
-                        </div>
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-slate-400 font-medium">Email Saat Ini:</span>
-                            <span id="labelOldEmail" class="text-slate-300"></span>
-                        </div>
-                    </div>
+
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
@@ -215,13 +205,13 @@
                             <label class="block text-xs text-slate-300 mb-1.5 font-semibold">Domisili Sekarang</label>
                             <input type="text" name="update_domisili" id="claimDomisili"
                                 class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm"
-                                placeholder="Contoh: Surabaya">
+                                placeholder="Biarkan kosong jika tidak diubah">
                         </div>
                         <div>
                             <label class="block text-xs text-slate-300 mb-1.5 font-semibold">Pekerjaan</label>
                             <input type="text" name="update_pekerjaan" id="claimPekerjaan"
                                 class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm"
-                                placeholder="Contoh: PNS">
+                                placeholder="Biarkan kosong jika tidak diubah">
                         </div>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -229,13 +219,13 @@
                             <label class="block text-xs text-slate-300 mb-1.5 font-semibold">Instansi / Kantor</label>
                             <input type="text" name="update_instansi" id="claimInstansi"
                                 class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm"
-                                placeholder="Contoh: Kementerian Kesehatan">
+                                placeholder="Biarkan kosong jika tidak diubah">
                         </div>
                         <div>
                             <label class="block text-xs text-slate-300 mb-1.5 font-semibold">LinkedIn URL</label>
                             <input type="url" name="update_linkedin" id="claimLinkedIn"
                                 class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm"
-                                placeholder="Contoh: https://linkedin.com/in/...">
+                                placeholder="Biarkan kosong jika tidak diubah">
                         </div>
                     </div>
                     <div>
@@ -267,37 +257,20 @@
             document.getElementById('claimAlumniId').value = alumniId;
             document.getElementById('claimAlumniName').textContent = name + " (" + graduationYear + ")";
             
-            // Set labels
-            document.getElementById('labelOldPhone').textContent = maskedPhone || "—";
-            document.getElementById('labelOldEmail').textContent = maskedEmail || "—";
 
-            // If there is no phone/email at all, hide the section
-            if (!maskedPhone && !maskedEmail) {
-                document.getElementById('oldDataSection').classList.add('hidden');
-            } else {
-                document.getElementById('oldDataSection').classList.remove('hidden');
-            }
 
-            // Prefill usulan data (keep Phone and Email EMPTY to avoid exposing them, user fills only if they want to update)
-            document.getElementById('claimNoHP').value = "";
-            document.getElementById('claimEmail').value = "";
-            document.getElementById('claimDomisili').value = domicile || "";
-            document.getElementById('claimPekerjaan').value = job || "";
-            document.getElementById('claimInstansi').value = office || "";
-            document.getElementById('claimLinkedIn').value = linkedin || "";
-            
-            // Clear WA & Catatan
+            // Clear all form fields - user only fills what they want to change
             const form = document.getElementById('claimForm');
             form.reset();
             document.getElementById('claimAlumniId').value = alumniId; // restore
             
-            // Keep Phone and Email EMPTY on input reset too
+            // Keep all update fields EMPTY (user fills only if they want to change)
             document.getElementById('claimNoHP').value = "";
             document.getElementById('claimEmail').value = "";
-            document.getElementById('claimDomisili').value = domicile || "";
-            document.getElementById('claimPekerjaan').value = job || "";
-            document.getElementById('claimInstansi').value = office || "";
-            document.getElementById('claimLinkedIn').value = linkedin || "";
+            document.getElementById('claimDomisili').value = "";
+            document.getElementById('claimPekerjaan').value = "";
+            document.getElementById('claimInstansi').value = "";
+            document.getElementById('claimLinkedIn').value = "";
             
             document.getElementById('modalAlert').classList.add('hidden');
             
